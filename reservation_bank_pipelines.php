@@ -40,7 +40,6 @@ if (!defined('_ECRIRE_INC_VERSION'))
     $table = $flux['args']['table'];
     //Enregistrer l'id_reservation
     if($table = 'spip_transactions') {
-      spip_log('ok','teste');
       $flux['data']['id_reservation'] = session_get('id_reservation');
     }
     return $flux;
