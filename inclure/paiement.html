@@ -1,0 +1,23 @@
+
+
+<BOUCLE_reservation(RESERVATIONS){id_reservation = #ENV{id_evenement,#SESSION{id_reservation}}}{tout}>
+  #SET{reference,#REFERENCE}
+  #SET{prix, #ARRAY}
+   #SET{prix_ht, #ARRAY} 
+  <BOUCLE_reservation_details(RESERVATIONS_DETAILS){id_reservation}{id_reservations_detail ?}{tout}>
+    #SET{prix_ht,#GET{prix_ht}|push{#PRIX_HT*}}
+    #SET{prix,#GET{prix}|push{#PRIX*}}
+  </BOUCLE_reservation_details>
+</BOUCLE_reservation>
+
+[(#FORMULAIRE_PAYER_ACTE{
+  [(#GET{prix}|array_sum)],
+    [(#ARRAY{
+      montant_ht,[(#GET{prix_ht}|array_sum)],
+      id_commande,#ID_COMMANDE,
+      id_auteur,#SESSION{id_auteur},
+      id_reservation,#SESSION{id_panier},
+      tracking_id,#GET{reference}
+    })]
+  }
+)]

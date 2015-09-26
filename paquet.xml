@@ -1,6 +1,6 @@
 <paquet
   prefix="reservation_bank"
-  categorie="communication"
+  categorie="outil"
   version="1.0.0"
   etat="dev"
   compatibilite="[3.0.20;3.0.*]"
@@ -15,6 +15,7 @@
   <licence>GNU/GPL</licence>
 
   <necessite nom="reservation_evenement" compatibilite="[1.21.2;]" />
+  <necessite nom="bank" compatibilite="[3.0.31;]" />
 
   <pipeline nom="formulaire_traiter" inclure="reservation_bank_pipelines.php" />
 
