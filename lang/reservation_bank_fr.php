@@ -6,7 +6,7 @@ if (!defined('_ECRIRE_INC_VERSION')) return;
 $GLOBALS[$GLOBALS['idx_lang']] = array(
 
 	// R
-	'reservation_bank_titre' => 'Réseŕvations Bank',
+	'reservation_bank_titre' => 'Résérvations Bank',
 );
 
 ?>
