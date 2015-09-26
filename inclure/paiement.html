@@ -1,7 +1,6 @@
-
-
 <BOUCLE_reservation(RESERVATIONS){id_reservation = #ENV{id_evenement,#SESSION{id_reservation}}}{tout}>
-  #SET{reference,#REFERENCE}
+  #SET{reference,#REFERENCE} 
+  #SET{email,#EMAIL|sinon{#INFO_EMAIL{auteur,#ID_AUTEUR}}}
   #SET{prix, #ARRAY}
    #SET{prix_ht, #ARRAY} 
   <BOUCLE_reservation_details(RESERVATIONS_DETAILS){id_reservation}{id_reservations_detail ?}{tout}>
@@ -10,14 +9,18 @@
   </BOUCLE_reservation_details>
 </BOUCLE_reservation>
 
+#SET{total,#GET{prix}|array_sum}
+#SET{montant_ht,#GET{prix_ht}|array_sum}
+
+[(#REM) Affiche le formulaire Paiement de Bank]
 [(#FORMULAIRE_PAYER_ACTE{
-  [(#GET{prix}|array_sum)],
-    [(#ARRAY{
-      montant_ht,[(#GET{prix_ht}|array_sum)],
+  #GET{total},
+    #ARRAY{
+      montant_ht,#GET{montant_ht},
       id_commande,#ID_COMMANDE,
-      id_auteur,#SESSION{id_auteur},
+      auteur,#GET{email},
       id_reservation,#SESSION{id_panier},
       tracking_id,#GET{reference}
-    })]
+    }
   }
 )]

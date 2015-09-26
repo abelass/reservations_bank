@@ -15,7 +15,7 @@ if (!defined('_ECRIRE_INC_VERSION'))
 /**
  * Intervient au traitement du formulaire
  *
- * @pipeline post_edition
+ * @pipeline formulaire_traiter
  * @param  array $flux Données du pipeline
  * @return array       Données du pipeline
  */
@@ -28,10 +28,3 @@ if (!defined('_ECRIRE_INC_VERSION'))
     }
     return $flux;
   }
-
-/*
- * Un fichier de pipelines permet de regrouper
- * les fonctions de branchement de votre plugin
- * sur des pipelines existants.
- */
-?>
