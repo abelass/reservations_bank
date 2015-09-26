@@ -28,19 +28,3 @@ if (!defined('_ECRIRE_INC_VERSION'))
     }
     return $flux;
   }
-
-/**
- * Intervient avant l'enregistrement d'un objet
- *
- * @pipeline pre_insertion
- * @param  array $flux Données du pipeline
- * @return array       Données du pipeline
- */
-  function reservation_bank_pre_insertion($flux){
-    $table = $flux['args']['table'];
-    //Enregistrer l'id_reservation
-    if($table = 'spip_transactions') {
-      $flux['data']['id_reservation'] = session_get('id_reservation');
-    }
-    return $flux;
-  }
