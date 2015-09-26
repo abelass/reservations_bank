@@ -1,6 +1,7 @@
 <BOUCLE_reservation(RESERVATIONS){id_reservation = #ENV{id_evenement,#SESSION{id_reservation}}}{tout}>
   #SET{reference,#REFERENCE} 
   #SET{email,#EMAIL|sinon{#INFO_EMAIL{auteur,#ID_AUTEUR}}}
+  #SET{id_reservation,#ID_RESERVATION}  
   #SET{prix, #ARRAY}
    #SET{prix_ht, #ARRAY} 
   <BOUCLE_reservation_details(RESERVATIONS_DETAILS){id_reservation}{id_reservations_detail ?}{tout}>
@@ -17,9 +18,8 @@
   #GET{total},
     #ARRAY{
       montant_ht,#GET{montant_ht},
-      id_commande,#ID_COMMANDE,
       auteur,#GET{email},
-      id_reservation,#SESSION{id_panier},
+      id_reservation,#GET{id_reservation},
       tracking_id,#GET{reference}
     }
   }
