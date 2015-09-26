@@ -12,17 +12,18 @@
   Paquet genere le 2015-09-26 10:44:15
   (Vous pouvez bien entendu supprimer ces commentaires)
   -->
-
   <nom>Résérvations Bank</nom>
 
   <!-- cette balise peut etre presente plusieurs fois s'il y a plusieurs auteurs -->
   <auteur>Rainer Müller</auteur>
   <licence>GNU/GPL</licence>
 
+  <necessite nom="reservation_evenement" compatibilite="[1.21.2;]" />
+
   <!--
   Exemple de commandes
   * dependances
-  <necessite nom="saisies" compatibilite="[1.21.0;]" />
+  
   <utilise nom="saisies" compatibilite="[1.21.0;]" />
   <lib nom="simplehtmldom" lien="http://chemin_vers_archive.zip" />
   * pipelines
