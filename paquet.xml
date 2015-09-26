@@ -8,17 +8,15 @@
   documentation=""
   schema="1.0.0"
 >
-  <!--
-  Paquet genere le 2015-09-26 10:44:15
-  (Vous pouvez bien entendu supprimer ces commentaires)
-  -->
-  <nom>Résérvations Bank</nom>
+  <nom>Réservations Bank</nom>
 
   <!-- cette balise peut etre presente plusieurs fois s'il y a plusieurs auteurs -->
   <auteur>Rainer Müller</auteur>
   <licence>GNU/GPL</licence>
 
   <necessite nom="reservation_evenement" compatibilite="[1.21.2;]" />
+
+  <pipeline nom="formulaire_traiter" inclure="reservation_bank_pipelines.php" />
 
   <!--
   Exemple de commandes

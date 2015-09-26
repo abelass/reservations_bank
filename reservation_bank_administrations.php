@@ -1,8 +1,8 @@
 <?php
 /**
- * Fichier gérant l'installation et désinstallation du plugin Réseŕvations Bank
+ * Fichier gérant l'installation et désinstallation du plugin Réservations Bank
  *
- * @plugin     Réseŕvations Bank
+ * @plugin     Réservations Bank
  * @copyright  2015
  * @author     Rainer Müller
  * @licence    GNU/GPL
@@ -13,7 +13,7 @@ if (!defined('_ECRIRE_INC_VERSION')) return;
 
 
 /**
- * Fonction d'installation et de mise à jour du plugin Réseŕvations Bank.
+ * Fonction d'installation et de mise à jour du plugin Réservations Bank.
  *
  * Vous pouvez :
  *
@@ -55,7 +55,7 @@ function reservation_bank_upgrade($nom_meta_base_version, $version_cible) {
 
 
 /**
- * Fonction de désinstallation du plugin Réseŕvations Bank.
+ * Fonction de désinstallation du plugin Réservations Bank.
  * 
  * Vous devez :
  *

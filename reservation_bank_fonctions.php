@@ -1,8 +1,8 @@
 <?php
 /**
- * Fonctions utiles au plugin Réseŕvations Bank
+ * Fonctions utiles au plugin Réservations Bank
  *
- * @plugin     Réseŕvations Bank
+ * @plugin     Réservations Bank
  * @copyright  2015
  * @author     Rainer Müller
  * @licence    GNU/GPL
