@@ -38,7 +38,7 @@ if (!defined('_ECRIRE_INC_VERSION'))
  */
   function reservation_bank_pre_insertion($flux){
     $table = $flux['args']['table'];
-      spip_log($flux,'teste');
+    //Enregistrer l'id_reservation
     if($table = 'spip_transactions') {
       spip_log('ok','teste');
       $flux['data']['id_reservation'] = session_get('id_reservation');
