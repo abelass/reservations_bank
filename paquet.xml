@@ -6,7 +6,6 @@
   compatibilite="[3.0.20;3.0.*]"
   logo="prive/themes/spip/images/reservation_bank-64.png"
   documentation=""
-  schema="1.0.0"
 >
   <nom>Réservations Bank</nom>
 
