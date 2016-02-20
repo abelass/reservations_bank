@@ -22,28 +22,64 @@ if (!defined('_ECRIRE_INC_VERSION'))
 function reservation_bank_formulaire_charger($flux){
 	$form = $flux['args']['form'];
 	if ($form == 'encaisser_reglement'){
-		$flux['data']['_mes_saisies'] =  array(
-			array( // le fieldset
+
+		$id_transaction = $flux['data']['_id_transaction'];
+		$transaction = sql_fetsel('id_reservation,montant', 'spip_transactions', 'id_transaction=' . $id_transaction);
+		$id_reservation = $flux['id_reservation'] = $transaction['id_reservation'];
+		$montant = $flux['montant'] = $transaction['montant'];
+		$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
+		$montant_detail = array();
+		$count = sql_count($sql);
+		$montant_transaction_detail = $montant / $count;
+		while ($data = sql_fetch($sql)) {
+			$devise = $data['devise'];
+			if($montant = $data['prix'] <= 0) {
+				$montant = $data['prix_ht'] + $data['taxe'];
+			}
+			$montant_detail[] = array(
+				'saisie' => 'input',
+				'options' => array(
+					'nom' => 'montant_reservations_detail',
+					'label' => $data['descriptif'],
+					'defaut' => $montant_transaction_detail,
+					'size' => 20,
+					)
+				);
+			$flux['_hidden'] .= '<input name="montant_reservations_detail['. $data['id_reservations_detail'] . ']" value="' .$montant. '" type="hidden">';
+		}
+		
+		$flux['_mes_saisies'] =  array(
+			array(
 			'saisie' => 'fieldset',
 			'options' => array(
-				'nom' => 'montant',
-				'label' => _T('reservation_bank:fieldset_label_montant'),
+				'nom' => 'specifier',
+				'label' => _T('reservation_bank:label_fieldset_specifier'),
 				),
-					'saisies' => array( // les champs dans le fieldset
-						array( // champ titre : ligne de texte
+					'saisies' => array(
+						array( 
 							'saisie' => 'oui_non',
 							'options' => array(
 							'nom' => 'specifier_montant',
 							'label' => _T('reservation_bank:label_specifier_montant'),
 						)
 					),
-				)
+				),
 			),
+			array(
+			'saisie' => 'fieldset',
+			'options' => array(
+				'nom' => 'montant',
+				'label' => _T('reservation_bank:label_fieldset_montant_detail',array('devise' => $devise)),
+				'afficher_si' => '@specifier_montant@ == "on"',
+				),
+				'saisies' => $montant_detail,
+			)
 		);
 	}
 	return $flux;
 }
-		/**
+
+/**
  * Intervient au traitement d'unf formulaire CVT
  *
  * @pipeline formulaire_traiter
