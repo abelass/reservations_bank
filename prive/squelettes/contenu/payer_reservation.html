@@ -5,9 +5,20 @@
 	[<h2><:reservation:titre_reservation:> #(#ID_TRANSACTION) / [(#DATE_TRANSACTION|affdate_heure)]</h2>]
 	<INCLURE{fond=inclure/reservation,id_reservation,id_transaction,titre=#GET{titre}} />
 	<BOUCLE_reservations_detail(RESERVATIONS_DETAILS){id_reservation}{tout}{0,1}>
+		#SET{devise,#DEVISE}
 		#SET{titre,#VAL{reservation_bank:titre_payer_reservation}|_T|concat{ #VAL{&nbsp;#}}|concat{#ID_TRANSACTION,'&nbsp;: ',#MONTANT|prix_formater_devise{#DEVISE}}}
 	</BOUCLE_reservations_detail>
 
+		<BOUCLE_reservation(RESERVATIONS){id_reservation}{tout}>
+		#SET{credit,#CREDIT|credit_client{#GET{devise}}
+			[(#SET{reservation, #ARRAY{
+				email,#EMAIL,
+				nom,#NOM,
+				credit,#GET{credit}
+				}
+			})]
+		</BOUCLE_reservation>
+		
 	<BOUCLE_client(AUTEURS){email = #AUTEUR}{statut==.*}>
 		[(#VAL{client_adresse_facture}|trouver_fond{modeles}|oui)
 		<br />
@@ -17,13 +28,12 @@
 			<strong><a href="#URL_ECRIRE{client,email=#EMAIL}" title="#NOM">#NOM</a></strong>
 		</p>
 	</BOUCLE_client>
-		<BOUCLE_reservation(RESERVATIONS){id_reservation}{tout}>
 		<p>
-			<strong><a href="#URL_ECRIRE{client,email=#EMAIL}" title="#NOM">#NOM</a></strong>
+			#SET{nom,#GET{reservation}|table_valeur{nom}}
+			<strong><a href="#URL_ECRIRE{client,email=(#GET{reservation}|table_valeur{email})}" title="#GET{nom}">#GET{nom}</a></strong>
 		</p>
-		</BOUCLE_reservation>
 	<//B_client>
-	<INCLURE{fond=modeles/payer_acte,id_transaction,transaction_hash,title=#GET{titre}}>
+	<INCLURE{fond=modeles/payer_acte,id_transaction,transaction_hash,title=#GET{titre}, credit=#GET{reservation}|table_valeur{credit}}>
 </BOUCLE_trans>
 <p><:paniers:erreur_aucune_commande:></p>
 <//B_trans>
