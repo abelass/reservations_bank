@@ -21,12 +21,12 @@ if (!defined('_ECRIRE_INC_VERSION'))
  */
 function reservation_bank_formulaire_traiter($flux) {
 	$form = $flux['args']['form'];
+
 	// Affiche le formulaire de paiment au retour du formulaire réservation
 	if ($form == 'reservation') {
-
+		include_spip('inc/config');
 		$id_reservation = session_get('id_reservation');
 
-		include_spip('inc/config');
 		if (!$cacher_paiement_public = lire_config('reservation_bank/cacher_paiement_public')) {
 			$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement', array(
 					'id_reservation' => session_get('id_reservation'),
@@ -35,7 +35,6 @@ function reservation_bank_formulaire_traiter($flux) {
 			);
 		}
 		else {
-
 			$inserer_transaction = charger_fonction("inserer_transaction", "bank");
 			$donnees = unserialize(recuperer_fond(
 				'inclure/paiement',
@@ -44,7 +43,6 @@ function reservation_bank_formulaire_traiter($flux) {
 					)
 				)
 			);
-			spip_log($donnees,'teste');
 			$id_transaction = $inserer_transaction($donnees['montant'], $donnees['options']);
 		}
 	}
