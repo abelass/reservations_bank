@@ -10,7 +10,7 @@
  */
 
 if (!defined('_ECRIRE_INC_VERSION'))
-  return;
+	return;
 
 /**
  * Fonction d'installation et de mise à jour du plugin Réservations Bank.
@@ -29,20 +29,20 @@ if (!defined('_ECRIRE_INC_VERSION'))
  * @return void
  **/
 function reservation_bank_upgrade($nom_meta_base_version, $version_cible) {
-  $maj = array();
-  $maj['create'] = array(
-    array(
-      'maj_tables',
-      array('spip_transactions')
-    ),
-    array(
-      'sql_alter',
-      'TABLE spip_transactions ADD INDEX `id_reservation` (`id_reservation`)'
-    )
-  );
+	$maj = array();
+	$maj['create'] = array(
+		array(
+			'maj_tables',
+			array('spip_transactions')
+		),
+		array(
+			'sql_alter',
+			'TABLE spip_transactions ADD INDEX `id_reservation` (`id_reservation`)'
+		)
+	);
 
-  include_spip('base/upgrade');
-  maj_plugin($nom_meta_base_version, $version_cible, $maj);
+	include_spip('base/upgrade');
+	maj_plugin($nom_meta_base_version, $version_cible, $maj);
 }
 
 /**
@@ -59,6 +59,6 @@ function reservation_bank_upgrade($nom_meta_base_version, $version_cible) {
  **/
 function reservation_bank_vider_tables($nom_meta_base_version) {
 
-  effacer_meta($nom_meta_base_version);
+	effacer_meta($nom_meta_base_version);
 }
 ?>
