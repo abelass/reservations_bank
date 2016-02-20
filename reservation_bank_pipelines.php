@@ -28,10 +28,8 @@ function reservation_bank_formulaire_charger($flux){
 		$id_reservation = $flux['id_reservation'] = $transaction['id_reservation'];
 		$montant = $flux['montant'] = $transaction['montant'];
 		//Cas spécial pour les crédits
-		if ($flux['data']['_mode'] == 'credit') {
-			if ($credit = credit_client('',$transaction['auteur'])) {
+		if ($flux['data']['_mode'] == 'credit' AND $credit = credit_client('',$transaction['auteur'])) {
 				$flux['credit'] = $credit;
-			}
 		}
 		
 		// Définir les champs pour les détails de réservation.
