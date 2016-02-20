@@ -27,7 +27,12 @@ function reservation_bank_formulaire_charger($flux){
 		$transaction = sql_fetsel('id_reservation,montant,auteur', 'spip_transactions', 'id_transaction=' . $id_transaction);
 		$id_reservation = $flux['id_reservation'] = $transaction['id_reservation'];
 		$montant = $flux['montant'] = $transaction['montant'];
-		
+		//Cas spécial pour les crédits
+		if ($flux['data']['_mode'] == 'credit') {
+			if ($credit = credit_client('',$transaction['auteur'])) {
+				$flux['credit'] = $credit;
+			}
+		}
 		
 		// Définir les champs pour les détails de réservation.
 		$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
@@ -38,6 +43,9 @@ function reservation_bank_formulaire_charger($flux){
 		while ($data = sql_fetch($sql)) {
 			$devise = $data['devise'];
 			
+			if ($credit[$devise] > 0) {
+				$montant_transaction_detail = $credit[$devise] / $count ;
+			}
 			if($montant = $data['prix'] <= 0) {
 				$montant = $data['prix_ht'] + $data['taxe'];
 			}
@@ -53,12 +61,7 @@ function reservation_bank_formulaire_charger($flux){
 			$flux['_hidden'] .= '<input name="montant_reservations_detail['. $data['id_reservations_detail'] . ']" value="' .$montant. '" type="hidden">';
 		}
 		
-		//Cas spécial pour les crédits
-		if ($flux['data']['_mode'] =='credit') {
-			if ($credit = credit_client('',$transaction['auteur'],$devise)) {
-				
-			}
-		}
+
 		
 		$flux['_mes_saisies'] =  array(
 			array(
