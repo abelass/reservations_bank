@@ -22,17 +22,22 @@ if (!defined('_ECRIRE_INC_VERSION'))
 function reservation_bank_formulaire_charger($flux){
 	$form = $flux['args']['form'];
 	if ($form == 'encaisser_reglement'){
-
 		$id_transaction = $flux['data']['_id_transaction'];
-		$transaction = sql_fetsel('id_reservation,montant', 'spip_transactions', 'id_transaction=' . $id_transaction);
+		// Les infos supplémentaires de la transaction
+		$transaction = sql_fetsel('id_reservation,montant,auteur', 'spip_transactions', 'id_transaction=' . $id_transaction);
 		$id_reservation = $flux['id_reservation'] = $transaction['id_reservation'];
 		$montant = $flux['montant'] = $transaction['montant'];
+		
+		
+		// Définir les champs pour les détails de réservation.
 		$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
+		
 		$montant_detail = array();
 		$count = sql_count($sql);
 		$montant_transaction_detail = $montant / $count;
 		while ($data = sql_fetch($sql)) {
 			$devise = $data['devise'];
+			
 			if($montant = $data['prix'] <= 0) {
 				$montant = $data['prix_ht'] + $data['taxe'];
 			}
@@ -46,6 +51,13 @@ function reservation_bank_formulaire_charger($flux){
 					)
 				);
 			$flux['_hidden'] .= '<input name="montant_reservations_detail['. $data['id_reservations_detail'] . ']" value="' .$montant. '" type="hidden">';
+		}
+		
+		//Cas spécial pour les crédits
+		if ($flux['data']['_mode'] =='credit') {
+			if ($credit = credit_client('',$transaction['auteur'],$devise)) {
+				
+			}
 		}
 		
 		$flux['_mes_saisies'] =  array(
@@ -75,6 +87,7 @@ function reservation_bank_formulaire_charger($flux){
 				'saisies' => $montant_detail,
 			)
 		);
+		$flux['specifier_montant'] = _request('specifier_montant');
 	}
 	return $flux;
 }
@@ -127,7 +140,7 @@ function reservation_bank_pre_insertion($flux) {
 	$table = $flux['args']['table'];
 
 	// Enregistre l'id_reservation dans la transaction.
-	if ($table = 'spip_transactions') {
+	if ($table == 'spip_transactions') {
 		$flux['data']['id_reservation'] = session_get('id_reservation');
 	}
 	return $flux;
