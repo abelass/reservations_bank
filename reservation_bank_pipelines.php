@@ -28,25 +28,24 @@ function reservation_bank_formulaire_traiter($flux) {
 
 		include_spip('inc/config');
 		if (!$cacher_paiement_public = lire_config('reservation_bank/cacher_paiement_public')) {
-			$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement', array('id_reservation' => session_get('id_reservation')));
+			$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement', array(
+					'id_reservation' => session_get('id_reservation'),
+					'cacher_paiement_public' => FALSE,
+				)
+			);
 		}
 		else {
-			include_spip('inc/donnees_reservations_details');
-			$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite', 'spip_reservations_details', 'id_reservation = ' . $id_reservation);
-			$prix = array();
-			$prix_ht = array();
-			while ($data = sql_fetch($sql)) {
-				$set = etablir_prix($data['id_reservations_detail'], 'reservations_detail', $data, array(), $data['quantite']);
-				$prix[] = $data['prix'] * $data['quantite'];
-				$prix_ht[] = $data['prix_ht'] * $data['quantite'];
-			}
 
 			$inserer_transaction = charger_fonction("inserer_transaction", "bank");
-			$id_transaction = $inserer_transaction(array_sum($prix), array(
-				'tracking_id' => $id_reservation,
-				'montant_ht' => array_sum($prix_ht),
-				'auteur' => _request('email'),
-			));
+			$donnees = unserialize(recuperer_fond(
+				'inclure/paiement',
+					array('id_reservation' => session_get('id_reservation'),
+						'cacher_paiement_public' => TRUE,
+					)
+				)
+			);
+			spip_log($donnees,'teste');
+			$id_transaction = $inserer_transaction($donnees['montant'], $donnees['options']);
 		}
 	}
 	return $flux;
@@ -61,7 +60,6 @@ function reservation_bank_formulaire_traiter($flux) {
  */
 function reservation_bank_pre_insertion($flux) {
 	$table = $flux['args']['table'];
-	spip_log($flux, 'teste');
 	if ($table = 'spip_transactions') {
 		$flux['data']['id_reservation'] = session_get('id_reservation');
 	}

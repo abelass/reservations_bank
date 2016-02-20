@@ -12,15 +12,25 @@
 		#SET{montant_ht,#GET{prix_ht}|array_sum}
 		</B_reservation_details>
 </BOUCLE_reservation>
+#SET{options,#ARRAY{
+		montant_ht,#GET{montant_ht},
+		auteur,#GET{email},
+		id_reservation,#GET{id_reservation},
+		tracking_id,#GET{reference}
+	}
+}
+#SET{donnees, 	#ARRAY{
+		montant, #GET{total},
+		options, #GET{options}
+	}
+}
 
-[(#REM) Affiche le formulaire Paiement de Bank]
-[(#FORMULAIRE_PAYER_ACTE{
-		#GET{total},
-		#ARRAY{
-			montant_ht,#GET{montant_ht},
-			auteur,#GET{email},
-			id_reservation,#GET{id_reservation},
-			tracking_id,#GET{reference}
-		}
+[(#ENV{cacher_paiement_public}|?{
+	[(#REM) Retourne un tableau des données pour l'enregitrement de la transaction]
+	[(#GET{donnees}|serialize)]
+	,
+	[(#REM) Affiche le formulaire Paiement de Bank]
+	[(#FORMULAIRE_PAYER_ACTE{#GET{total},#GET{options}})]
 	}
 )]
+
