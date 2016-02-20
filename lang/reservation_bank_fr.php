@@ -12,7 +12,9 @@ $GLOBALS[$GLOBALS['idx_lang']] = array(
 	'reservation_bank_titre' => 'Réservations Bank',
 
 	// T
-	'titre_page_configurer_reservation_bank' => 'Configuration Réservations Bank'
+	'titre_page_configurer_reservation_bank' => 'Configuration Réservations Bank',
+	'titre_paiement_reservation' => 'Paiement de la réservation',
+	'titre_payer_reservation' => 'Payez la réservation',
 );
 
 ?>
