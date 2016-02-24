@@ -1,0 +1,14 @@
+<td class='client'>
+	<INCLURE{fond=prive/objets/contenu/inc-reservation_montant,id_reservation}/>
+	<BOUCLE_transactions(TRANSACTIONS){id_reservation}{statut IN commande,attente}{par date_transaction}{0,1}>
+	[<abbr title="[(#MESSAGE|attribut_html)[ - (#ERREUR|attribut_html)]]">(#STATUT)</abbr>]
+	[(#AUTORISER{regler,transaction,#ID_TRANSACTION})
+		<br/><a href="[(#URL_ECRIRE{payer_reservation,id_transaction=#ID_TRANSACTION}|parametre_url{transaction_hash,#TRANSACTION_HASH}|parametre_url{id_reservation,#ID_RESERVATION})]"><:bank:payer:></a>
+	]
+	</BOUCLE_transactions>
+	[(#AUTORISER{regler,transaction,#ID_TRANSACTION})
+	<a href="[(#URL_ECRIRE{payer_reservation,id_transaction=new}|parametre_url{id_reservation,#ID_RESERVATION})]"><:bank:payer:></a>
+	]
+	<//B_transactions>	
+
+</td>

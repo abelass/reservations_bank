@@ -37,7 +37,11 @@ function reservation_bank_formulaire_charger($flux){
 		
 		$montant_detail = array();
 		$count = sql_count($sql);
-		$montant_transaction_detail = $montant / $count;
+		if ($count > 0) {
+			$montant_transaction_detail = $montant / $count;
+		}
+		
+		
 		while ($data = sql_fetch($sql)) {
 			$devise = $data['devise'];
 			
@@ -116,15 +120,7 @@ function reservation_bank_formulaire_traiter($flux) {
 			);
 		}
 		else {
-			$inserer_transaction = charger_fonction("inserer_transaction", "bank");
-			$donnees = unserialize(recuperer_fond(
-				'inclure/paiement',
-					array('id_reservation' => session_get('id_reservation'),
-						'cacher_paiement_public' => TRUE,
-					)
-				)
-			);
-			$id_transaction = $inserer_transaction($donnees['montant'], $donnees['options']);
+			$id_transaction =rb_inserer_transaction(session_get('id_reservation'));
 		}
 	}
 	return $flux;
@@ -162,5 +158,18 @@ function reservation_bank_recuperer_fond($flux){
 		$reservation_bank = recuperer_fond('formulaires/inc-encaisser_reglement_reservation',$flux['data']['contexte']);
 		$flux['data']['texte'] = str_replace('<ul class="editer-groupe">', $reservation_bank . '<ul class="editer-groupe">', $flux['data']['texte']);
 	}
+	
+	//Ajoute un colonne en plus à la liste des réservations
+	if ($fond =='prive/objets/liste/inc-reservations_reservations') {
+		$row = recuperer_fond('prive/objets/liste/inc-reservations_thead',$flux['data']['contexte']);
+		$flux['data']['texte'] = str_replace("<th class='client' scope='col'>", $row. "<th class='client' scope='col'>", $flux['data']['texte']);
+	}
+	
+	//Ajoute un colonne en plus à la liste des réservations
+	if ($fond =='prive/objets/liste/inc-reservations_row') {
+		$row = recuperer_fond('prive/objets/liste/inc-reservations_row_paiement',$flux['data']['contexte']);
+		$flux['data']['texte'] = str_replace("<td class='client'>", $row. "<td class='client'>", $flux['data']['texte']);
+	}	
+	
 	return $flux;
 }
