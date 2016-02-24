@@ -1,4 +1,4 @@
-<BOUCLE_reservation(RESERVATIONS){id_reservation = #ENV{id_evenement,#SESSION{id_reservation}}}{tout}>
+<BOUCLE_reservation(RESERVATIONS){id_reservation}{tout}>
 	#SET{reference,#REFERENCE}
 	#SET{email,#EMAIL|sinon{#INFO_EMAIL{auteur,#ID_AUTEUR}}}
 	#SET{id_reservation,#ID_RESERVATION}

@@ -18,6 +18,7 @@
 	<necessite nom="bank" compatibilite="[3.2.6;]" />
 
 	<pipeline nom="formulaire_charger" inclure="reservation_bank_pipelines.php" />
+	<pipeline nom="formulaire_verifier" inclure="reservation_bank_pipelines.php" />	
 	<pipeline nom="formulaire_traiter" inclure="reservation_bank_pipelines.php" />
 	<pipeline nom="pre_insertion" inclure="reservation_bank_pipelines.php" />
 	<pipeline nom="recuperer_fond" inclure="reservation_bank_pipelines.php" />

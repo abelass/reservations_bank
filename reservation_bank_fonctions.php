@@ -10,13 +10,24 @@
  */
 
 if (!defined('_ECRIRE_INC_VERSION'))
-  return;
+	return;
 
-/*
- * Un fichier de fonctions permet de définir des éléments
- * systématiquement chargés lors du calcul des squelettes.
+/**
+ * Crée une transaction
  *
- * Il peut par exemple définir des filtres, critères, balises, …
- *
+ * @param  integer $id_reservation id_reservation
+ * @return $id_transaction  Id de la transaction crée
  */
-?>
+function rb_inserer_transaction($id_reservation) {
+	session_set('id_reservation',$id_reservation);
+	$inserer_transaction = charger_fonction("inserer_transaction", "bank");
+	$donnees = unserialize(recuperer_fond(
+		'inclure/paiement',
+			array('id_reservation' => $id_reservation,
+				'cacher_paiement_public' => TRUE,
+			)
+		)
+	);
+	$id_transaction = $inserer_transaction($donnees['montant'], $donnees['options']);
+	return $id_transaction;
+}
