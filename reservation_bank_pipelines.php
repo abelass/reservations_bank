@@ -32,6 +32,8 @@ function reservation_bank_formulaire_charger($flux){
 		//Cas spécial pour les crédits
 		if ($flux['data']['_mode'] == 'credit' AND $credit = credit_client('',$transaction['auteur'])) {
 				$flux['data']['credit'] = $credit;
+				$flux['data']['email_client'] = $email_client = $transaction['auteur'];
+				$flux['_hidden'] .= '<input name="email_client" value="' .$email_client. '" type="hidden"/>';
 		}
 		
 		// Définir les champs pour les détails de réservation.
@@ -55,14 +57,17 @@ function reservation_bank_formulaire_charger($flux){
 			}
 			
 			$montant_reservations_detail_total[$id_reservations_detail] = $montant;
-			if ($credit[$devise] > 0) {
-				$montant_transaction_detail = $credit[$devise] / $count ;
-			}
+
 			
 			$montant_ouvert = $montant_transaction_detail - $data['montant_paye'];
 			
 			if ($montant_ouvert < $montant_transaction_detail) {
 				$montant_transaction_detail = $montant_ouvert;
+			}
+
+			if ($credit[$devise] > 0 AND ($credit[$devise]) <= $montant_ouvert) {
+				
+				$montant_transaction_detail = $credit[$devise] / $count ;
 			}
 			
 			if (!$montant_defaut = _request('montant_reservations_detail_' . $id_reservations_detail)) {
@@ -239,7 +244,8 @@ function reservation_bank_pre_edition($flux) {
 	}
 	return $flux;
 }
-	/**
+
+/**
  * Permet de compléter ou modifier le résultat de la compilation d’un squelette donné.
  *
  * @pipeline recuperer_fond
@@ -297,10 +303,14 @@ function reservation_bank_bank_traiter_reglement($flux){
 		elseif (is_array($montant_regle)) {
 			$montant_regle = array_sum($montant_regle);
 		}
+		
+		set_request('montant_regle',$montant_regle);
+		
 		$set = array(
 			'montant_regle' => $montant_regle,
 			'paiement_detail' => serialize($paiement_detail)
 			);
+			
 		sql_updateq('spip_transactions',$set,'id_transaction=' . $id_transaction);
 		
 		include_spip('action/editer_objet');
