@@ -33,7 +33,7 @@ function reservation_bank_upgrade($nom_meta_base_version, $version_cible) {
 	$maj['create'] = array(
 		array(
 			'maj_tables',
-			array('spip_transactions')
+			array('spip_transactions','spip_reservations_details')
 		),
 		array(
 			'sql_alter',

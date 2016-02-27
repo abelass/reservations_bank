@@ -23,8 +23,12 @@ if (!defined('_ECRIRE_INC_VERSION'))
  */
 
 function reservation_bank_declarer_tables_objets_sql($tables) {
-	//Ajouter un champ id_reservation à la table transaction
+	//Ajouter un champ id_reservation et paiement_detail à la table transaction
 	$tables['spip_transactions']['field']['id_reservation'] = "bigint(21) NOT NULL DEFAULT 0";
 	$tables['spip_transactions']['field']['paiement_detail'] = "varchar(255)  DEFAULT '0' NOT NULL";
+	
+	//Ajouter un champ montant_paye à la table spip_reservations_details
+	$tables['spip_reservations_details']['field']['montant_paye'] = "float NOT NULL DEFAULT '0'";	
+	$tables['spip_reservations_details']['champs_editables'][] = "montant_paye";
 	return $tables;
 }

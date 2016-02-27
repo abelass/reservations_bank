@@ -6,7 +6,6 @@
 [(#ENV{id_transaction}|=={new}|oui)
 	[(#ENV{id_reservation}|rb_inserer_transaction|set{id_transaction})]
 	#SET{transaction_hash,#INFO_TRANSACTION_HASH{transactions,#GET{id_transaction}}}
-	#GET{transaction_hash}
 ]
 
 
