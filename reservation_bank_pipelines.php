@@ -172,7 +172,7 @@ function reservation_bank_formulaire_verifier($flux) {
  */
 function reservation_bank_formulaire_traiter($flux) {
 	$form = $flux['args']['form'];
-		//spip_log($flux,'teste');
+
 	// Affiche le formulaire de paiment au retour du formulaire réservation
 	if ($form == 'reservation') {
 		include_spip('inc/config');
@@ -222,7 +222,6 @@ function reservation_bank_pre_edition($flux) {
 	
 	
 	if ($table == 'spip_reservations_details' AND $flux['data']['statut'] = 'accepte') {
-		//spip_log($flux,'teste');
 		// Si le montant payé est inférieur au montant du; on change les statut.
 		$id_reservation_detail = $flux['args']['id_reservation_detail'];
 		$montant_reservations_detail_total = _request('montant_reservations_detail_total');
@@ -230,15 +229,13 @@ function reservation_bank_pre_edition($flux) {
 		$montant_reservations_detail = _request('montant_reservations_detail_' . $id_reservation_detail);
 		$montant_paye = _request('montant_paye');
 		$montant_paye = $montant_paye[$id_reservation_detail] + $montant_reservations_detail;
-		spip_log("montant total $montant_total",'teste');
-		spip_log("montant paye $montant_paye",'teste');
+
 		if ($montant_paye < $montant_total) {
-			spip_log('accepte_part','teste');
 			$flux['data']['statut'] = 'accepte_part';
 		}
 		// Enregistre le montant payé
 		$flux['data']['montant_paye'] = $montant_paye;
-		spip_log($flux['data'],'teste');
+
 	}
 	return $flux;
 }
@@ -287,22 +284,29 @@ function reservation_bank_bank_traiter_reglement($flux){
 		and $transaction = sql_fetsel("*","spip_transactions","id_transaction=".intval($id_transaction))
 		and $id_reservation = $transaction['id_reservation']
 	){
-		$statut_commande = $commande['statut'];
+		$montant_reservations_detail_total = _request('montant_reservations_detail_total') ? _request('montant_reservations_detail_total') : array();
 		
-		if (!$montant_regle = _request('montant_reservations_detail')){
+		$paiement_detail = array();
+		foreach(array_keys($montant_reservations_detail_total) AS $id_reservation_detail ) {
+			$paiement_detail[$id_reservation_detail] = _request('montant_reservations_detail_' . $id_reservation_detail);
+		}
+		
+		if (!$montant_regle = array_sum($paiement_detail)){
 			$montant_regle = $transaction['montant_regle'];
-			set_request('montant_reservations_detail',$montant_regle);
 		}
 		elseif (is_array($montant_regle)) {
 			$montant_regle = array_sum($montant_regle);
 		}
+		$set = array(
+			'montant_regle' => $montant_regle,
+			'paiement_detail' => serialize($paiement_detail)
+			);
+		sql_updateq('spip_transactions',$set,'id_transaction=' . $id_transaction);
 		
-		$montant_regle = _request('montant_reservations_detail') ? array_sum(_request('montant_reservations_detail')) : 
-		sql_updateq('spip_transactions',array('montant_regle' => $montant_regle),'id_transaction=' . $id_transaction);
 		include_spip('action/editer_objet');
 		objet_instituer('reservation',$id_reservation,array(
 			'statut' => 'accepte',
-			'montant_reservations_detail' => $montant_regle
+			'date_paiement' => $transaction['date_transaction'],
 			)
 		);
 	}
