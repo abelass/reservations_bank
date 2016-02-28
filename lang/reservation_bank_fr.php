@@ -15,6 +15,9 @@ $GLOBALS[$GLOBALS['idx_lang']] = array(
 	// M
 	'message_erreur_montant_reservations_detail' => 'Le montant ne doit pas être supérieure à @montant_ouvert@ (montant encore à payer)',
 	
+	// P
+	'paiement_reservation' => 'Paiement de la réservation #@id_reservation@',
+	
 	// R
 	'reservation_bank_titre' => 'Réservations Bank',
 
