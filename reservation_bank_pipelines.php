@@ -34,7 +34,7 @@ function reservation_bank_formulaire_charger($flux){
 		
 		//Cas spécial pour les crédits
 		if ($flux['data']['_mode'] == 'credit' AND $credit = credit_client('',$transaction['auteur'])) {
-				$flux['data']['credit'] = $credit;
+				$flux['data']['credit'] = '';
 				$flux['data']['email_client'] = $email_client = $transaction['auteur'];
 				$flux['_hidden'] .= '<input name="email_client" value="' .$email_client. '" type="hidden"/>';
 		}
@@ -46,10 +46,12 @@ function reservation_bank_formulaire_charger($flux){
 		$montant_reservations_detail_defaut = array();
 		$montant_reservations_detail_total = array();
 		$count = sql_count($sql);
+		$montant_transaction_detail = '';
 		if ($count > 0) {
 			$montant_transaction_detail = $montant_transaction / $count;
 		}
-		
+		$montant_ouvert = '';
+		$montant_defaut = '';
 		while ($data = sql_fetch($sql)) {
 			$id_reservations_detail = $data['id_reservations_detail'];
 			$devise = $data['devise'];
@@ -62,35 +64,36 @@ function reservation_bank_formulaire_charger($flux){
 			$montant_reservations_detail_total[$id_reservations_detail] = $montant;
 
 			
-			$montant_ouvert = $montant_transaction_detail - $data['montant_paye'];
-			
-			if ($montant_ouvert < $montant_transaction_detail) {
-				$montant_transaction_detail = $montant_ouvert;
+			$montant_ouvert = $montant- $data['montant_paye'];
+			if ($montant_ouvert < $montant_transaction_detail AND $montant_ouvert >= 0) {
+								if (!$montant_defaut = _request('montant_reservations_detail_' . $id_reservations_detail)) {
+				$montant_defaut = $montant_ouvert;
+				}
 			}
 
-			if ($credit[$devise] > 0 AND ($credit[$devise]) <= $montant_ouvert) {
-				
-				$montant_transaction_detail = $credit[$devise] / $count ;
+			if ($credit[$devise] > 0 AND ($credit[$devise]/ $count ) <= $montant_defaut) {
+				$montant_defaut = $credit[$devise] / $count ;
 			}
-			
-			if (!$montant_defaut = _request('montant_reservations_detail_' . $id_reservations_detail)) {
-				$montant_defaut =  $montant_transaction_detail;
-			}
-			
-			$montant_detail[] = array(
-				'saisie' => 'input',
-				'options' => array(
-					'nom' => 'montant_reservations_detail_' . $id_reservations_detail,
-					'label' => $data['descriptif'],
-					'defaut' => $montant_defaut,
-					'size' => 20,
+		
+			if ($montant_defaut > 0) {
+				$montant_detail[] = array(
+					'saisie' => 'input',
+					'options' => array(
+						'nom' => 'montant_reservations_detail_' . $id_reservations_detail,
+						'label' => $data['descriptif'],
+						'defaut' => $montant_defaut,
+						'size' => 20,
 					)
 				);
+			}
+
 				$flux['data']['montant_reservations_detail_' . $id_reservations_detail] = '';
-				$montant_reservations_detail_defaut[$id_reservations_detail] = $montant_transaction_detail;
+				$montant_reservations_detail_defaut[$id_reservations_detail] = $montant_ouvert;
 		}
 		
-
+		if($credit) {
+			$flux['_hidden'] .= '<input name="credit" value="' .$credit[$devise]. '" type="hidden"/>';
+		}
 		
 		$flux['_mes_saisies'] =  array(
 			array(
@@ -155,19 +158,25 @@ function reservation_bank_formulaire_verifier($flux) {
 		$sql = sql_select('id_reservations_detail,montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
 		$montant_ouvert = array();
 		$montant_paye = array();
+		$montants = array();
 		while ($data = sql_fetch($sql)) {
 			$id_reservations_detail = $data['id_reservations_detail'];
 			$montant = _request('montant_reservations_detail_' .$id_reservations_detail);
 			$montant_defaut = $montant_reservations_detail_defaut[$id_reservations_detail];
 			
 			$montant_paye[$id_reservations_detail] = $paye = $data['montant_paye'];
-
+			$montants[] = $montant;
 			set_request('montant_paye',$montant_paye);
-			session_set('encaisser_montant_regle',$montant);
 			if (_request('specifier_montant') AND $montant > $montant_defaut) {
 				$flux['data']['montant_reservations_detail_' .$id_reservations_detail]= _T('reservation_bank:message_erreur_montant_reservations_detail',array('montant_ouvert' => $montant_defaut));
 			}
 		}
+
+		spip_log(array_sum($montants) ,'teste');
+		if ($credit = _request('credit') AND $credit < array_sum($montants)){
+			$flux['data']['specifier_montant']= _T('reservation_bank:message_erreur_montant_credit',array('credit' => $credit));
+		}
+		session_set('encaisser_montant_regle',array_sum($montants));
 	}
 	return $flux;
 }
