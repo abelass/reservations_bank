@@ -25,12 +25,12 @@
 	}
 }
 
-[(#ENV{cacher_paiement_public}|?{
+[(#ENV{cacher_paiement_public}|oui)
 	[(#REM) Retourne un tableau des données pour l'enregitrement de la transaction]
 	[(#GET{donnees}|serialize)]
-	,
+]
+[(#ENV{cacher_paiement_public}|non)
 	[(#REM) Affiche le formulaire Paiement de Bank]
 	[(#FORMULAIRE_PAYER_ACTE{#GET{total},#GET{options}})]
-	}
-)]
+]
 
