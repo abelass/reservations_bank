@@ -51,7 +51,6 @@ function reservation_bank_formulaire_charger($flux){
 		$montant_ouvert = '';
 		$montant_defaut = '';
 		while ($data = sql_fetch($sql)) {
-			
 			$id_reservations_detail = $data['id_reservations_detail'];
 			$devise = $data['devise'];
 			$montant_paye[$id_reservations_detail] = $data['montant_paye'];
@@ -93,6 +92,7 @@ function reservation_bank_formulaire_charger($flux){
 		}
 		
 		if($credit) {
+			$flux['credit'] = '';
 			$flux['_hidden'] .= '<input name="credit" value="' .$credit[$devise]. '" type="hidden"/>';
 		}
 		
