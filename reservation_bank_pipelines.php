@@ -29,9 +29,7 @@ function reservation_bank_formulaire_charger($flux){
 		$id_reservation = $flux['id_reservation'] = $transaction['id_reservation'];
 		$montant_transaction = $flux['montant'] = $transaction['montant'];
 		
-		session_set('encaisser_id_reservation',$id_reservation);
-		session_set('encaisser_id_transaction',$id_transaction);
-		
+
 		//Cas spécial pour les crédits
 		if ($flux['data']['_mode'] == 'credit' AND $credit = credit_client('',$transaction['auteur'])) {
 				$flux['data']['credit'] = '';
@@ -53,6 +51,7 @@ function reservation_bank_formulaire_charger($flux){
 		$montant_ouvert = '';
 		$montant_defaut = '';
 		while ($data = sql_fetch($sql)) {
+			
 			$id_reservations_detail = $data['id_reservations_detail'];
 			$devise = $data['devise'];
 			$montant_paye[$id_reservations_detail] = $data['montant_paye'];
@@ -64,9 +63,10 @@ function reservation_bank_formulaire_charger($flux){
 			$montant_reservations_detail_total[$id_reservations_detail] = $montant;
 
 			
-			$montant_ouvert = $montant- $data['montant_paye'];
+			$montant_ouvert = $montant_defaut = $montant- $data['montant_paye'];
+			
 			if ($montant_ouvert < $montant_transaction_detail AND $montant_ouvert >= 0) {
-								if (!$montant_defaut = _request('montant_reservations_detail_' . $id_reservations_detail)) {
+					if (!$montant_defaut = _request('montant_reservations_detail_' . $id_reservations_detail)) {
 				$montant_defaut = $montant_ouvert;
 				}
 			}
@@ -74,8 +74,9 @@ function reservation_bank_formulaire_charger($flux){
 			if ($credit[$devise] > 0 AND ($credit[$devise]/ $count ) <= $montant_defaut) {
 				$montant_defaut = $credit[$devise] / $count ;
 			}
-		
+
 			if ($montant_defaut > 0) {
+				
 				$montant_detail[] = array(
 					'saisie' => 'input',
 					'options' => array(
