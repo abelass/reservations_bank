@@ -25,8 +25,19 @@
 	</BOUCLE_transactions>
 	[(#AUTORISER{regler,transaction,#ID_TRANSACTION})
 		[(#GET{paiement}|oui)
-			<a href="[(#URL_ECRIRE{payer_reservation,id_transaction=new}|parametre_url{id_reservation,#ID_RESERVATION})]"><:bank:payer:></a>]
+		[(#ID_RESERVATION|rb_inserer_transaction|set{id_transaction})]
+		#SET{transaction_hash,#INFO_TRANSACTION_HASH{transactions,#GET{id_transaction}}}
+			<a href="[(#URL_ECRIRE{payer_reservation,id_transaction=#GET{id_transaction}}|parametre_url{id_reservation,#ID_RESERVATION}|parametre_url{transaction_hash,#TRANSACTION_HASH})]"><:bank:payer:></a>]
 	]
 	<//B_transactions>	
 
 </td>
+
+#SET{id_transaction,#ENV{id_transaction}}
+#SET{transaction_hash,#ENV{transaction_hash}}
+
+[(#REM) Pas de transaction; on en crée une]
+
+	[(#ENV{id_reservation}|rb_inserer_transaction|set{id_transaction})]
+	#SET{transaction_hash,#INFO_TRANSACTION_HASH{transactions,#GET{id_transaction}}}
+

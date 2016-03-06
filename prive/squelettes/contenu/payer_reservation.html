@@ -1,17 +1,8 @@
 [(#AUTORISER{regler,transaction,#ID_TRANSACTION}|sinon_interdire_acces)]
-#SET{id_transaction,#ENV{id_transaction}}
-#SET{transaction_hash,#ENV{transaction_hash}}
-
-[(#REM) Pas de transaction; on en crée une]
-[(#ENV{id_transaction}|=={new}|oui)
-	[(#ENV{id_reservation}|rb_inserer_transaction|set{id_transaction})]
-	#SET{transaction_hash,#INFO_TRANSACTION_HASH{transactions,#GET{id_transaction}}}
-]
-
 
 <B_trans>
 <h1 class="grostitre"><:reservation_bank:titre_paiement_reservation:> #ID_TRANSACTION</h1>
-<BOUCLE_trans(TRANSACTIONS){id_transaction=#GET{id_transaction}}{transaction_hash=#GET{transaction_hash}}{statut IN commande,attente}>
+<BOUCLE_trans(TRANSACTIONS){id_transaction}{transaction_hash}{statut IN commande,attente}>
 	[<h2><:reservation:titre_reservation:> #(#ID_TRANSACTION) / [(#DATE_TRANSACTION|affdate_heure)]</h2>]
 	<INCLURE{fond=inclure/reservation,id_reservation,id_transaction,titre=#GET{titre}} />
 	<BOUCLE_reservations_detail(RESERVATIONS_DETAILS){id_reservation}{tout}{0,1}>
