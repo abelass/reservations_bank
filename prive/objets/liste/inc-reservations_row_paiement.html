@@ -1,43 +1,8 @@
 <td class='client'>
-	#SET{montant_total,#ARRAY}
-	#SET{montant_paye,#ARRAY}	
-	#SET{paiement,''}
-	<BOUCLE_details(RESERVATIONS_DETAILS){id_reservation}{tout}>
-		#SET{prix,#PRIX**}
-		[(#PRIX**|=={0}|oui)
-			#SET{prix,#PRIX_HT**|plus{#TAXE}}
-		]
-		#SET{montant_total,#GET{montant_total}|push{#GET{prix}}}
-		#SET{montant_paye,#GET{montant_paye}|push{#MONTANT_PAYE}}
-	</BOUCLE_details>
-
-	[(#GET{montant_total}|array_sum|>{#GET{montant_paye}|array_sum}|oui)
-		#SET{paiement,oui}
-	]
-	<INCLURE{fond=prive/objets/contenu/inc-reservation_montant,id_reservation}/>
-	<BOUCLE_transactions(TRANSACTIONS){id_reservation}{statut IN commande,attente}{par date_transaction}{0,1}>
-	[<abbr title="[(#MESSAGE|attribut_html)[ - (#ERREUR|attribut_html)]]">(#STATUT)</abbr>]
-	[(#AUTORISER{regler,transaction,#ID_TRANSACTION})
-		[(#GET{paiement}|oui)
-			<br/><a href="[(#URL_ECRIRE{payer_reservation,id_transaction=#ID_TRANSACTION}|parametre_url{transaction_hash,#TRANSACTION_HASH}|parametre_url{id_reservation,#ID_RESERVATION})]"><:bank:payer:></a>
-		]
-	]
-	</BOUCLE_transactions>
-	[(#AUTORISER{regler,transaction,#ID_TRANSACTION})
-		[(#GET{paiement}|oui)
-		[(#ID_RESERVATION|rb_inserer_transaction|set{id_transaction})]
-		#SET{transaction_hash,#INFO_TRANSACTION_HASH{transactions,#GET{id_transaction}}}
-			<a href="[(#URL_ECRIRE{payer_reservation,id_transaction=#GET{id_transaction}}|parametre_url{id_reservation,#ID_RESERVATION}|parametre_url{transaction_hash,#TRANSACTION_HASH})]"><:bank:payer:></a>]
-	]
-	<//B_transactions>	
-
+	#SET{total,0}
+	<BOUCLE_reservation_details(RESERVATIONS_DETAILS){id_reservation}{id_reservations_detail ?}{tout}>
+		[(#SET{total,[(#GET{total}|plus{#PRIX*})]})]
+	</BOUCLE_reservation_details>
+	<INCLURE{fond=prive/objets/contenu/inc-reservation_montant,id_reservation,total=#GET{total}}/>
+	<INCLURE{fond=inclure/lien_paiement,id_reservation}/>
 </td>
-
-#SET{id_transaction,#ENV{id_transaction}}
-#SET{transaction_hash,#ENV{transaction_hash}}
-
-[(#REM) Pas de transaction; on en crée une]
-
-	[(#ENV{id_reservation}|rb_inserer_transaction|set{id_transaction})]
-	#SET{transaction_hash,#INFO_TRANSACTION_HASH{transactions,#GET{id_transaction}}}
-

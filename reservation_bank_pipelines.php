@@ -268,24 +268,39 @@ function reservation_bank_pre_edition($flux) {
  */
 function reservation_bank_recuperer_fond($flux){
 	$fond = $flux['args']['fond'];
+	$contexte = $flux['data']['contexte'];
 
 	// Ajoute des champs supplémentaires pour le paiment des réservations dans l'espace privé.
 	if ($fond == 'formulaires/encaisser_reglement' AND _request('exec') == 'payer_reservation'){
-		$reservation_bank = recuperer_fond('formulaires/inc-encaisser_reglement_reservation',$flux['data']['contexte']);
+		$reservation_bank = recuperer_fond('formulaires/inc-encaisser_reglement_reservation', $contexte);
 		$flux['data']['texte'] = str_replace('<ul class="editer-groupe">', $reservation_bank . '<ul class="editer-groupe">', $flux['data']['texte']);
 	}
 	
 	//Ajoute un colonne en plus à la liste des réservations
 	if ($fond =='prive/objets/liste/inc-reservations_reservations') {
-		$row = recuperer_fond('prive/objets/liste/inc-reservations_thead',$flux['data']['contexte']);
+		$row = recuperer_fond('prive/objets/liste/inc-reservations_thead', $contexte);
 		$flux['data']['texte'] = str_replace("<th class='client' scope='col'>", $row. "<th class='client' scope='col'>", $flux['data']['texte']);
 	}
 	
 	//Ajoute un colonne en plus à la liste des réservations
 	if ($fond =='prive/objets/liste/inc-reservations_row') {
-		$row = recuperer_fond('prive/objets/liste/inc-reservations_row_paiement',$flux['data']['contexte']);
+		$row = recuperer_fond('prive/objets/liste/inc-reservations_row_paiement', $contexte);
 		$flux['data']['texte'] = str_replace("<td class='client'>", $row. "<td class='client'>", $flux['data']['texte']);
-	}	
+	}
+	
+	//Ajoute le lien de paiement à la page réservation
+	if ($fond =='prive/objets/contenu/inc-reservation_montant') {
+		$id_reservation = $contexte['id_reservation'];
+		$sql = sql_select('montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation );
+		
+		$montant_paye = array();
+		while ($data = sql_fetch($sql)) {
+			$montant_paye[] = $data['montant_paye'];
+		}
+		$contexte['montant_paye'] = array_sum($montant_paye);
+		$row = recuperer_fond('prive/objets/contenu/inc-reservation_montant_paiement', $contexte);
+		$flux['data']['texte'] = str_replace('</div>','</div>' . $row, $flux['data']['texte']);
+	}
 	
 	return $flux;
 }
