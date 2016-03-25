@@ -14,8 +14,8 @@
 	<licence>GNU/GPL</licence>
 	
 	<necessite nom="saisies" compatibilite="[2.5.29;]" />
-	<necessite nom="reservation_evenement" compatibilite="[1.21.14;]" />
-	<necessite nom="bank" compatibilite="[3.2.6;]" />
+	<necessite nom="reservation_evenement" compatibilite="[1.21.16;]" />
+	<necessite nom="bank" compatibilite="[3.2.6;]" ></necessite>
 
 	<pipeline nom="formulaire_charger" inclure="reservation_bank_pipelines.php" />
 	<pipeline nom="formulaire_verifier" inclure="reservation_bank_pipelines.php" />	
