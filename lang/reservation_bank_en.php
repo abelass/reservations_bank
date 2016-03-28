@@ -29,5 +29,3 @@ $GLOBALS[$GLOBALS['idx_lang']] = array(
 	'titre_paiement_reservation' => 'Paiment of the Booking',
 	'titre_payer_reservation' => 'Pay the booking',
 );
-
-?>
