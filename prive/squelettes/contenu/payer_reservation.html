@@ -9,7 +9,7 @@
 		#SET{devise,#DEVISE}
 		#SET{titre,#VAL{reservation_bank:titre_payer_reservation}|_T|concat{ #VAL{&nbsp;#}}|concat{#ID_TRANSACTION,'&nbsp;: ',#MONTANT|prix_formater_devise{#DEVISE}}}
 	</BOUCLE_reservations_detail>
-		
+
 	<BOUCLE_client(AUTEURS){email = #AUTEUR}{statut==.*}>
 		[(#VAL{client_adresse_facture}|trouver_fond{modeles}|oui)
 		<br />
@@ -21,7 +21,7 @@
 	</BOUCLE_client>
 		<BOUCLE_reservation(RESERVATIONS){id_reservation}{tout}>
 		<p>
-			<strong><a href="#URL_ECRIRE{client,email=(#EMAIL)}" title="#NOM">#NOM</a></strong>
+			<strong><a href="#URL_ECRIRE{client,email=EMAIL}" title="#NOM">#NOM</a></strong>
 		</p>
 		</BOUCLE_reservation>
 
