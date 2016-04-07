@@ -173,7 +173,6 @@ function reservation_bank_formulaire_verifier($flux) {
 			}
 		}
 
-		spip_log(array_sum($montants) ,'teste');
 		if ($credit = _request('credit') AND $credit < array_sum($montants)){
 			$flux['data']['specifier_montant']= _T('reservation_bank:message_erreur_montant_credit',array('credit' => $credit));
 		}
