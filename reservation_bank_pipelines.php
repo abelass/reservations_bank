@@ -340,10 +340,10 @@ function reservation_bank_bank_traiter_reglement($flux){
 			'paiement_detail' => serialize($paiement_detail)
 			);
 
-		sql_updateq('spip_transactions',$set,'id_transaction=' . $id_transaction);
-		spip_log('bank_traiter_reglement', 'teste');
+		sql_updateq('spip_transactions', $set, 'id_transaction=' . $id_transaction);
+
 		include_spip('action/editer_objet');
-		objet_instituer('reservation',$id_reservation,array(
+		objet_modifier('reservation', $id_reservation, array(
 			'statut' => 'accepte',
 			'date_paiement' => $transaction['date_transaction'],
 			)
