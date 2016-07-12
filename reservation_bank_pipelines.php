@@ -343,7 +343,7 @@ function reservation_bank_bank_traiter_reglement($flux){
 		sql_updateq('spip_transactions', $set, 'id_transaction=' . $id_transaction);
 
 		include_spip('action/editer_objet');
-		objet_modifier('reservation', $id_reservation, array(
+		objet_instituer('reservation', $id_reservation, array(
 			'statut' => 'accepte',
 			'date_paiement' => $transaction['date_transaction'],
 			)
