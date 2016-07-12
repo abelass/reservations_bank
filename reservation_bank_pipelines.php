@@ -238,17 +238,19 @@ function reservation_bank_pre_insertion($flux) {
 function reservation_bank_pre_edition($flux) {
 	$table = $flux['args']['table'];
 
+	if ($table == 'spip_reservations_details'
+			and $montant_reservations_detail_total = _request('montant_reservations_detail_total')
+			and $montant_paye = _request('montant_paye')) {
 
-	if ($table == 'spip_reservations_details' AND $flux['data']['statut'] == 'accepte') {
-		// Si le montant payé est inférieur au montant dû on change les statuts.
 		$id_reservation_detail = $flux['args']['id_reservation_detail'];
-		$montant_reservations_detail_total = _request('montant_reservations_detail_total');
+
 		$montant_total = $montant_reservations_detail_total[$id_reservation_detail];
 		$montant_reservations_detail = _request('montant_reservations_detail_' . $id_reservation_detail);
-		$montant_paye = _request('montant_paye');
+
 		$montant_paye = $montant_paye[$id_reservation_detail] + $montant_reservations_detail;
 
-		if ($montant_paye < $montant_total) {
+		// Si le montant payé est inférieur au montant dû on change les statuts.
+		if ($flux['data']['statut'] == 'accepte' and $montant_paye < $montant_total) {
 			$flux['data']['statut'] = 'accepte_part';
 		}
 		// Enregistre le montant payé
