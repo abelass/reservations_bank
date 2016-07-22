@@ -197,7 +197,7 @@ function reservation_bank_formulaire_traiter($flux) {
 		$id_reservation = session_get('id_reservation');
 
 		if (!$cacher_paiement_public = lire_config('reservation_bank/cacher_paiement_public')) {
-			$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement', array(
+			$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement_commande', array(
 					'id_reservation' => session_get('id_reservation'),
 					'cacher_paiement_public' => FALSE,
 				)
@@ -320,7 +320,23 @@ function reservation_bank_bank_traiter_reglement($flux){
 		and $transaction = sql_fetsel("*","spip_transactions","id_transaction=".intval($id_transaction))
 		and $id_reservation = $transaction['id_reservation']
 	){
-		$montant_reservations_detail_total = _request('montant_reservations_detail_total') ? _request('montant_reservations_detail_total') : array();
+		if (!$montant_reservations_detail_total = _request('montant_reservations_detail_total')) {
+			$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif,montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
+
+			$montant_reservations_detail_total = array();
+
+			while ($data = sql_fetch($sql)) {
+				$id_reservations_detail = $data['id_reservations_detail'];
+				$montant_paye[$id_reservations_detail] = $data['montant_paye'];
+
+				if ($montant = $data['prix'] <= 0) {
+					$montant = $data['prix_ht'] + $data['taxe'];
+				}
+				$montant_reservations_detail_total[$id_reservations_detail] = $montant;
+				se_request('montant_reservations_detail_' . $id_reservation_detail = $montant);
+			}
+			set_request('montant_reservations_detail_total', $montant_reservations_detail_total);
+		}
 
 		$paiement_detail = array();
 		foreach(array_keys($montant_reservations_detail_total) AS $id_reservation_detail ) {
@@ -333,7 +349,6 @@ function reservation_bank_bank_traiter_reglement($flux){
 		elseif (is_array($montant_regle)) {
 			$montant_regle = array_sum($montant_regle);
 		}
-
 
 		set_request('montant_regle',$montant_regle);
 

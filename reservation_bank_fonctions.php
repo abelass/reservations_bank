@@ -22,7 +22,7 @@ function rb_inserer_transaction($id_reservation) {
 	session_set('id_reservation',$id_reservation); //Pas propre, ne devrait pas être dans la session, à améliorer
 	$inserer_transaction = charger_fonction("inserer_transaction", "bank");
 	$donnees = unserialize(recuperer_fond(
-		'inclure/paiement',
+		'inclure/paiement_reservation',
 			array('id_reservation' => $id_reservation,
 				'cacher_paiement_public' => TRUE,
 			)
