@@ -26,19 +26,23 @@ function reservation_bank_formulaire_charger($flux) {
 		$id_transaction = $flux ['data'] ['_id_transaction'];
 		
 		// Les infos supplémentaires de la transaction
-		$transaction = sql_fetsel('id_reservation,montant,auteur', 'spip_transactions', 'id_transaction=' . $id_transaction);
+		$transaction = sql_fetsel('id_reservation,montant,auteur', 
+			'spip_transactions', 'id_transaction=' . $id_transaction);
 		$id_reservation = $flux ['id_reservation'] = $transaction ['id_reservation'];
 		$montant_transaction = $flux ['montant'] = $transaction ['montant'];
 		
 		// Cas spécial pour les crédits
-		if ($flux ['data'] ['_mode'] == 'credit' and $credit = credit_client('', $transaction ['auteur'])) {
+		if ($flux ['data'] ['_mode'] == 'credit' 
+			and $credit = credit_client('', $transaction ['auteur'])) {
 			$flux ['data'] ['credit'] = '';
 			$flux ['data'] ['email_client'] = $email_client = $transaction ['auteur'];
 			$flux ['_hidden'] .= '<input name="email_client" value="' . $email_client . '" type="hidden"/>';
 		}
 		
 		// Définir les champs pour les détails de réservation.
-		$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif,montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
+		$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif,montant_paye',
+			'spip_reservations_details', 
+			'id_reservation=' . $id_reservation);
 		
 		$montant_detail = array ();
 		$montant_reservations_detail_defaut = array ();
@@ -153,8 +157,10 @@ function reservation_bank_formulaire_verifier($flux) {
 	if ($form == 'encaisser_reglement') {
 		$id_reservation = _request('id_reservation');
 		
-		$montant_reservations_detail_defaut = _request('montant_reservations_detail_defaut') ? unserialize(_request('montant_reservations_detail_defaut')) : array ();
-		$montant_reservations_detail_total = _request('montant_reservations_detail_total') ? unserialize(_request('montant_reservations_detail_total')) : array ();
+		$montant_reservations_detail_defaut = _request('montant_reservations_detail_defaut') 
+			? unserialize(_request('montant_reservations_detail_defaut')) : array ();
+		$montant_reservations_detail_total = _request('montant_reservations_detail_total') 
+			? unserialize(_request('montant_reservations_detail_total')) : array ();
 		
 		set_request('montant_reservations_detail_defaut', $montant_reservations_detail_defaut);
 		set_request('montant_reservations_detail_total', $montant_reservations_detail_total);
@@ -179,7 +185,8 @@ function reservation_bank_formulaire_verifier($flux) {
 		}
 		
 		if ($credit = _request('credit') and $credit < array_sum($montants)) {
-			$flux ['data'] ['specifier_montant'] = _T('reservation_bank:message_erreur_montant_credit', array (
+			$flux ['data'] ['specifier_montant'] = _T('reservation_bank:message_erreur_montant_credit', 
+				array (
 					'credit' => $credit 
 			));
 		}
@@ -249,7 +256,9 @@ function reservation_bank_pre_insertion($flux) {
 function reservation_bank_pre_edition($flux) {
 	$table = $flux ['args'] ['table'];
 	
-	if ($table == 'spip_reservations_details' and $montant_reservations_detail_total = _request('montant_reservations_detail_total') and $montant_paye = _request('montant_paye')) {
+	if ($table == 'spip_reservations_details' 
+		and $montant_reservations_detail_total = _request('montant_reservations_detail_total') 
+		and $montant_paye = _request('montant_paye')) {
 		
 		$id_reservation_detail = $flux ['args'] ['id_reservation_detail'];
 		
@@ -284,25 +293,29 @@ function reservation_bank_recuperer_fond($flux) {
 	// Ajoute des champs supplémentaires pour le paiment des réservations dans l'espace privé.
 	if ($fond == 'formulaires/encaisser_reglement' and _request('exec') == 'payer_reservation') {
 		$reservation_bank = recuperer_fond('formulaires/inc-encaisser_reglement_reservation', $contexte);
-		$flux ['data'] ['texte'] = str_replace('<ul class="editer-groupe">', $reservation_bank . '<ul class="editer-groupe">', $flux ['data'] ['texte']);
+		$flux ['data'] ['texte'] = str_replace('<ul class="editer-groupe">',
+			$reservation_bank . '<ul class="editer-groupe">', $flux ['data'] ['texte']);
 	}
 	
 	// Ajoute un colonne en plus à la liste des réservations
 	if ($fond == 'prive/objets/liste/inc-reservations_reservations') {
 		$row = recuperer_fond('prive/objets/liste/inc-reservations_thead', $contexte);
-		$flux ['data'] ['texte'] = str_replace("<th class='client' scope='col'>", $row . "<th class='client' scope='col'>", $flux ['data'] ['texte']);
+		$flux ['data'] ['texte'] = str_replace("<th class='client' scope='col'>",
+			$row . "<th class='client' scope='col'>", $flux ['data'] ['texte']);
 	}
 	
 	// Ajoute un colonne en plus à la liste des réservations
 	if ($fond == 'prive/objets/liste/inc-reservations_row') {
 		$row = recuperer_fond('prive/objets/liste/inc-reservations_row_paiement', $contexte);
-		$flux ['data'] ['texte'] = str_replace("<td class='client'>", $row . "<td class='client'>", $flux ['data'] ['texte']);
+		$flux ['data'] ['texte'] = str_replace("<td class='client'>",
+			$row . "<td class='client'>", $flux ['data'] ['texte']);
 	}
 	
 	// Ajoute le lien de paiement à la page réservation
 	if ($fond == 'prive/objets/contenu/inc-reservation_montant') {
 		$id_reservation = $contexte ['id_reservation'];
-		$sql = sql_select('montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
+		$sql = sql_select('montant_paye', 'spip_reservations_details',
+			'id_reservation=' . $id_reservation);
 		
 		$montant_paye = array ();
 		while ( $data = sql_fetch($sql) ) {
@@ -326,9 +339,13 @@ function reservation_bank_recuperer_fond($flux) {
  */
 function reservation_bank_bank_traiter_reglement($flux) {
 	// Si on est dans le bon cas d'un paiement de reservation et qu'il y a un id_reservation et que la reservation existe toujours
-	if ($id_transaction = $flux ['args'] ['id_transaction'] and $transaction = sql_fetsel("*", "spip_transactions", "id_transaction=" . intval($id_transaction)) and $id_reservation = $transaction ['id_reservation']) {
+	if ($id_transaction = $flux ['args'] ['id_transaction'] 
+		and $transaction = sql_fetsel("*",
+			"spip_transactions", "id_transaction=" . intval($id_transaction)) 
+		and $id_reservation = $transaction ['id_reservation']) {
 		if (!$montant_reservations_detail_total = _request('montant_reservations_detail_total')) {
-			$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif,montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
+			$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif,montant_paye',
+				'spip_reservations_details', 'id_reservation=' . $id_reservation);
 			
 			$montant_reservations_detail_total = array ();
 			
