@@ -19,4 +19,10 @@
 	<natures>
 		<nature>org.eclipse.php.core.PHPNature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>reservqtion_evenements</name>
+			<value>file:/home/abelass/www/larut/plugins/reservation_evenements</value>
+		</variable>
+	</variableList>
 </projectDescription>
