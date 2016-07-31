@@ -8,14 +8,14 @@
  * @licence    GNU/GPL
  * @package    SPIP\Reservation_bank\Pipelines
  */
-if (! defined('_ECRIRE_INC_VERSION'))
+if (!defined('_ECRIRE_INC_VERSION'))
 	return;
 
 /**
  * permet de modifier le tableau de valeurs envoyé par la fonction charger d’un formulaire CVT
  *
  * @pipeline formulaire_charger
- * 
+ *
  * @param array $flux
  *        	Données du pipeline
  * @return array Données du pipeline
@@ -64,7 +64,7 @@ function reservation_bank_formulaire_charger($flux) {
 			$montant_ouvert = $montant_defaut = $montant - $data ['montant_paye'];
 			
 			if ($montant_ouvert < $montant_transaction_detail and $montant_ouvert >= 0) {
-				if (! $montant_defaut = _request('montant_reservations_detail_' . $id_reservations_detail)) {
+				if (!$montant_defaut = _request('montant_reservations_detail_' . $id_reservations_detail)) {
 					$montant_defaut = $montant_ouvert;
 				}
 			}
@@ -143,7 +143,7 @@ function reservation_bank_formulaire_charger($flux) {
  * Intervientpendant la vérification d'un formulaire CVT
  *
  * @pipeline formulaire_verifier
- * 
+ *
  * @param array $flux
  *        	Données du pipeline
  * @return array Données du pipeline
@@ -192,7 +192,7 @@ function reservation_bank_formulaire_verifier($flux) {
  * Intervient au traitement d'un formulaire CVT
  *
  * @pipeline formulaire_traiter
- * 
+ *
  * @param array $flux
  *        	Données du pipeline
  * @return array Données du pipeline
@@ -205,7 +205,7 @@ function reservation_bank_formulaire_traiter($flux) {
 		include_spip('inc/config');
 		$id_reservation = session_get('id_reservation');
 		
-		if (! $cacher_paiement_public = lire_config('reservation_bank/cacher_paiement_public')) {
+		if (!$cacher_paiement_public = lire_config('reservation_bank/cacher_paiement_public')) {
 			$flux ['data'] ['message_ok'] .= recuperer_fond('inclure/paiement_commande', array (
 					'id_reservation' => session_get('id_reservation'),
 					'cacher_paiement_public' => FALSE 
@@ -222,7 +222,7 @@ function reservation_bank_formulaire_traiter($flux) {
  * Intervient avant l'enregistrement d'un objet
  *
  * @pipeline pre_insertion
- * 
+ *
  * @param array $flux
  *        	Données du pipeline
  * @return array Données du pipeline
@@ -241,7 +241,7 @@ function reservation_bank_pre_insertion($flux) {
  * Intervient lors de l’édition d’un élément éditorial.
  *
  * @pipeline pre_edition
- * 
+ *
  * @param array $flux
  *        	Données du pipeline
  * @return array Données du pipeline
@@ -272,7 +272,7 @@ function reservation_bank_pre_edition($flux) {
  * Permet de compléter ou modifier le résultat de la compilation d’un squelette donné.
  *
  * @pipeline recuperer_fond
- * 
+ *
  * @param array $flux
  *        	Données du pipeline
  * @return array Données du pipeline
@@ -320,14 +320,14 @@ function reservation_bank_recuperer_fond($flux) {
  * Enregistrer le bon reglement d'une commande liee a une transaction du plugin bank
  *
  * @pipeline bank_traiter_reglement
- * 
+ *
  * @param array $flux        	
  * @return array mixed
  */
 function reservation_bank_bank_traiter_reglement($flux) {
 	// Si on est dans le bon cas d'un paiement de reservation et qu'il y a un id_reservation et que la reservation existe toujours
 	if ($id_transaction = $flux ['args'] ['id_transaction'] and $transaction = sql_fetsel("*", "spip_transactions", "id_transaction=" . intval($id_transaction)) and $id_reservation = $transaction ['id_reservation']) {
-		if (! $montant_reservations_detail_total = _request('montant_reservations_detail_total')) {
+		if (!$montant_reservations_detail_total = _request('montant_reservations_detail_total')) {
 			$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif,montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
 			
 			$montant_reservations_detail_total = array ();
@@ -350,7 +350,7 @@ function reservation_bank_bank_traiter_reglement($flux) {
 			$paiement_detail [$id_reservation_detail] = _request('montant_reservations_detail_' . $id_reservation_detail);
 		}
 		
-		if (! $montant_regle = array_sum($paiement_detail)) {
+		if (!$montant_regle = array_sum($paiement_detail)) {
 			$montant_regle = $transaction ['montant_regle'];
 		} elseif (is_array($montant_regle)) {
 			$montant_regle = array_sum($montant_regle);
