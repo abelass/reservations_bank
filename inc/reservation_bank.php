@@ -9,7 +9,6 @@
  * @return array 
  */
 function montant_reservations_detail_total($id_reservation) {
-	spip_log('bank_traiter_reglement', 'teste');
 	$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif,montant_paye',
 		'spip_reservations_details', 'id_reservation=' . $id_reservation);
 		
@@ -23,9 +22,11 @@ function montant_reservations_detail_total($id_reservation) {
 			$montant = $data['prix_ht'] + $data['taxe'];
 		}
 		$montant_reservations_detail_total[$id_reservations_detail] = $montant;
-		set_request('montant_reservations_detail_' . $id_reservation_detail, $montant);
+		set_request('montant_reservations_detail_' . $id_reservations_detail, $montant);
+		$montant_reservations_detail = _request('montant_reservations_detail_' . $id_reservations_detail);
 	}
-	set_request('montant_paye',$montant_paye);
+	
+	set_request('montant_paye', $montant_paye);
 	set_request('montant_reservations_detail_total', $montant_reservations_detail_total);
 	
 	return $montant_reservations_detail_total;

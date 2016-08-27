@@ -158,9 +158,6 @@ function reservation_bank_formulaire_verifier($flux) {
 		$montant_reservations_detail_total = _request('montant_reservations_detail_total') 
 			? unserialize(_request('montant_reservations_detail_total')) : array ();
 		
-		set_request('montant_reservations_detail_defaut', $montant_reservations_detail_defaut);
-		set_request('montant_reservations_detail_total', $montant_reservations_detail_total);
-		
 		$sql = sql_select('id_reservations_detail,montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
 		$montant_ouvert = array ();
 		$montant_paye = array ();
@@ -172,7 +169,6 @@ function reservation_bank_formulaire_verifier($flux) {
 			
 			$montant_paye[$id_reservations_detail] = $paye = $data['montant_paye'];
 			$montants[] = $montant;
-			set_request('montant_paye', $montant_paye);
 			if (_request('specifier_montant') and $montant > $montant_defaut) {
 				$flux['data']['montant_reservations_detail_' . $id_reservations_detail] = _T('reservation_bank:message_erreur_montant_reservations_detail', array (
 						'montant_ouvert' => $montant_defaut 
@@ -257,12 +253,8 @@ function reservation_bank_pre_edition($flux) {
 		
 		$id_reservation_detail = $flux['args']['id_reservation_detail'];
 		
-		spip_log("montant_reservations_detail_total: $montant_reservations_detail_total", 'teste');
-		spip_log("montant_paye: $montant_paye", 'teste');
-		
 		$montant_total = $montant_reservations_detail_total[$id_reservation_detail];
 		$montant_reservations_detail = _request('montant_reservations_detail_' . $id_reservation_detail);
-		spip_log("montant_reservations_detail: $montant_reservations_detail", 'teste');
 		$montant_paye = $montant_paye[$id_reservation_detail] + $montant_reservations_detail;
 		
 		// Si le montant payé est inférieur au montant dû on change les statuts.
