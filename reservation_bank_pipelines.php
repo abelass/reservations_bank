@@ -259,7 +259,6 @@ function reservation_bank_pre_edition($flux) {
 
 		$montant_total = $montant_reservations_detail_total[$id_reservation_detail];
 		$montant_reservations_detail = _request('montant_reservations_detail_' . $id_reservation_detail);
-		spip_log(_request('montant_reservations_detail_' . $id_reservation_detail), 'teste');
 		$montant_paye = $montant_paye[$id_reservation_detail] + $montant_reservations_detail;
 
 		// Si le montant payé est inférieur au montant dû on change les statuts.
