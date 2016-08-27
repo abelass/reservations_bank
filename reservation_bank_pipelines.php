@@ -22,9 +22,20 @@ if (!defined('_ECRIRE_INC_VERSION'))
  */
 function reservation_bank_formulaire_charger($flux) {
 	$form = $flux['args']['form'];
+	if ($form == 'reservation') {
+		$flux['data']['checkout'] = _request('checkout');
+		if ($flux['data']['checkout'] = _request('checkout')) {
+			$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement_reservation', array (
+				'id_reservation' => session_get('id_reservation'),
+				'cacher_paiement_public' => FALSE,
+			));
+			$flux['data']['editable'] = FALSE;
+		}
+	}
+	
 	if ($form == 'encaisser_reglement') {
 		$id_transaction = $flux['data']['_id_transaction'];
-		
+
 		// Les infos supplémentaires de la transaction
 		$transaction = sql_fetsel('id_reservation,montant,auteur', 'spip_transactions', 'id_transaction=' . $id_transaction);
 		$id_reservation = $flux['id_reservation'] = $transaction['id_reservation'];
@@ -36,6 +47,7 @@ function reservation_bank_formulaire_charger($flux) {
 			$flux['data']['email_client'] = $email_client = $transaction['auteur'];
 			$flux['_hidden'] .= '<input name="email_client" value="' . $email_client . '" type="hidden"/>';
 		}
+		
 		
 		// Définir les champs pour les détails de réservation.
 		$sql = sql_select('id_reservations_detail,prix,prix_ht,quantite,devise,taxe,descriptif,montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
