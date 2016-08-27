@@ -152,12 +152,17 @@ function reservation_bank_formulaire_verifier($flux) {
 	$form = $flux['args']['form'];
 	if ($form == 'encaisser_reglement') {
 		$id_reservation = _request('id_reservation');
-		
-		$montant_reservations_detail_defaut = _request('montant_reservations_detail_defaut') 
-			? unserialize(_request('montant_reservations_detail_defaut')) : array ();
-		$montant_reservations_detail_total = _request('montant_reservations_detail_total') 
-			? unserialize(_request('montant_reservations_detail_total')) : array ();
-		
+
+		$montant_reservations_detail_defaut = _request('montant_reservations_detail_defaut') ? unserialize(_request('montant_reservations_detail_defaut')) : array();
+		$montant_reservations_detail_total = _request('montant_reservations_detail_total') ? unserialize(_request('montant_reservations_detail_total')) : array();
+
+		if ($montant_reservations_detail_defaut){
+			set_request('montant_reservations_detail_defaut', $montant_reservations_detail_defaut);
+		}
+		if ($montant_reservations_detail_total) {
+			set_request('montant_reservations_detail_total',$montant_reservations_detail_total);
+		}
+
 		$sql = sql_select('id_reservations_detail,montant_paye', 'spip_reservations_details', 'id_reservation=' . $id_reservation);
 		$montant_ouvert = array ();
 		$montant_paye = array ();
@@ -169,13 +174,12 @@ function reservation_bank_formulaire_verifier($flux) {
 			
 			$montant_paye[$id_reservations_detail] = $paye = $data['montant_paye'];
 			$montants[] = $montant;
-			if (_request('specifier_montant') and $montant > $montant_defaut) {
-				$flux['data']['montant_reservations_detail_' . $id_reservations_detail] = _T('reservation_bank:message_erreur_montant_reservations_detail', array (
-						'montant_ouvert' => $montant_defaut 
-				));
+			
+			if (_request('specifier_montant') AND $montant > $montant_defaut) {
+				$flux['data']['montant_reservations_detail_' .$id_reservations_detail]= _T('reservation_bank:message_erreur_montant_reservations_detail',array('montant_ouvert' => $montant_defaut));
 			}
 		}
-		
+		set_request('montant_paye', $montant_paye);
 		if ($credit = _request('credit') and $credit < array_sum($montants)) {
 			$flux['data']['specifier_montant'] = _T('reservation_bank:message_erreur_montant_credit', array (
 					'credit' => $credit 
@@ -246,17 +250,18 @@ function reservation_bank_pre_insertion($flux) {
  */
 function reservation_bank_pre_edition($flux) {
 	$table = $flux['args']['table'];
-	
+
 	if ($table == 'spip_reservations_details' 
 		and $montant_reservations_detail_total = _request('montant_reservations_detail_total') 
 		and $montant_paye = _request('montant_paye')) {
-		
+
 		$id_reservation_detail = $flux['args']['id_reservation_detail'];
-		
+
 		$montant_total = $montant_reservations_detail_total[$id_reservation_detail];
 		$montant_reservations_detail = _request('montant_reservations_detail_' . $id_reservation_detail);
+		spip_log(_request('montant_reservations_detail_' . $id_reservation_detail), 'teste');
 		$montant_paye = $montant_paye[$id_reservation_detail] + $montant_reservations_detail;
-		
+
 		// Si le montant payé est inférieur au montant dû on change les statuts.
 		if ($flux['data']['statut'] == 'accepte' and $montant_paye < $montant_total) {
 			$flux['data']['statut'] = 'accepte_part';

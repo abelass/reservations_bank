@@ -25,8 +25,9 @@ function montant_reservations_detail_total($id_reservation) {
 		set_request('montant_reservations_detail_' . $id_reservations_detail, $montant);
 		$montant_reservations_detail = _request('montant_reservations_detail_' . $id_reservations_detail);
 	}
-	
+	spip_log('montant_paye' . serialize(_request('montant_paye')),'teste');
 	set_request('montant_paye', $montant_paye);
+	spip_log('montant_paye function' . serialize(_request('montant_paye')),'teste');
 	set_request('montant_reservations_detail_total', $montant_reservations_detail_total);
 	
 	return $montant_reservations_detail_total;
