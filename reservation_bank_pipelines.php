@@ -327,6 +327,41 @@ function reservation_bank_recuperer_fond($flux) {
 		$row = recuperer_fond('prive/objets/contenu/inc-reservation_montant_paiement', $contexte);
 		$flux['data']['texte'] = str_replace('</div>', '</div>' . $row, $flux['data']['texte']);
 	}
+
+	if ($fond == 'notifications/contenu_reservation_mail' and 
+			$statut = $flux['data']['contexte']['statut'] and
+			$qui = $flux['data']['contexte']['qui'] and
+			($statut == 'attente_paiement' or $statut == 'accepte')) {
+		$transaction = sql_fetsel('mode, id_transaction, transaction_hash, message',
+				'spip_transactions',
+				'id_reservation=' . $flux['data']['contexte']['id_reservation']);
+		$mode = $transaction['mode'];
+		$id_transaction = $transaction['id_transaction'];
+		if ($qui == 'client') {
+			if ($statut == 'attente_paiement') {
+				$texte = str_replace('h4', 'h3', bank_afficher_attente_reglement(
+						$mode,
+						$id_transaction,
+						$transaction['transaction_hash'],
+						'')
+						);
+			}
+			else{
+				$texte = '<p>' . $transaction['message'] . '</p>';
+			}
+		}
+		else {
+			$url = generer_url_ecrire('transaction', 'id_transaction=' . $id_transaction);
+			$texte = '<h2>' . _T('reservation_bank:titre_paiement_vendeur') . '</h2>';
+			$texte .= '<p>' . _T('reservation_bank:message_paiement_vendeur', array(
+				'mode' => $mode,
+				'url' => $url,
+				)
+			) . '</p>';
+		}
+
+		$flux['data']['texte'] = str_replace('</table>', '</table>' . $texte, $flux['data']['texte']);
+	}
 	
 	return $flux;
 }
@@ -390,7 +425,7 @@ function reservation_bank_bank_traiter_reglement($flux) {
  * @return array
  */
 function reservation_bank_trig_bank_reglement_en_attente($flux) {
-	spip_log($flux, 'teste');
+
 	$id_reservation = sql_getfetsel('id_reservation', 'spip_transactions', 'id_transaction=' . $flux['args']['id_transaction']);
 	include_spip('action/editer_objet');
 	objet_instituer('reservation', $id_reservation, array (

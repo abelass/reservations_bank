@@ -15,6 +15,7 @@ $GLOBALS[$GLOBALS['idx_lang']] = array(
 	// M
 	'message_erreur_montant_credit' => 'Vous avez depassé la limite de votre crédit qui es de @credit@ !',
 	'message_erreur_montant_reservations_detail' => 'Le montant ne doit pas être supérieure à @montant_ouvert@ (montant encore à payer)',
+	'message_paiement_vendeur' => 'Mode de paiement : "@mode@",  voir <a href="@url@">détail</a>',
 	'montant_paye' => 'Payé :',
 
 
@@ -27,6 +28,7 @@ $GLOBALS[$GLOBALS['idx_lang']] = array(
 	// T
 	'titre_page_configurer_reservation_bank' => 'Configuration Réservations Bank',
 	'titre_paiement_reservation' => 'Paiement de la réservation',
+	'titre_paiement_vendeur' => 'Paiement :',
 	'titre_payer_reservation' => 'Payez la réservation',
 );
 
