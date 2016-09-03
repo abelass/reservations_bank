@@ -381,3 +381,20 @@ function reservation_bank_bank_traiter_reglement($flux) {
 	
 	return $flux;
 }
+/**
+ * Changer de statut si transaction en attente
+ *
+ * @pipeline trig_bank_reglement_en_attente
+ *
+ * @param array $flux
+ * @return array
+ */
+function reservation_bank_trig_bank_reglement_en_attente($flux) {
+	spip_log($flux, 'teste');
+	$id_reservation = sql_getfetsel('id_reservation', 'spip_transactions', 'id_transaction=' . $flux['args']['id_transaction']);
+	include_spip('action/editer_objet');
+	objet_instituer('reservation', $id_reservation, array (
+		'statut' => 'attente_paiement',
+	));
+	return $flux;
+}
