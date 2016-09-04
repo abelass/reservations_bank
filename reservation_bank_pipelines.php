@@ -332,7 +332,6 @@ function reservation_bank_recuperer_fond($flux) {
 			and $id_reservation = $flux['data']['contexte']['id_reservation']
 			and $statut = sql_getfetsel('statut', 'spip_reservations', 'id_reservation=' . $id_reservation)
 			and ($statut == 'attente_paiement' or $statut == 'accepte')) {
-				spip_log('fond', 'teste');
 				$qui = $flux['data']['contexte']['qui'];
 				$transaction = sql_fetsel('mode, id_transaction, transaction_hash, message',
 				'spip_transactions',
