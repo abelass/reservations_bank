@@ -328,18 +328,25 @@ function reservation_bank_recuperer_fond($flux) {
 		$flux['data']['texte'] = str_replace('</div>', '</div>' . $row, $flux['data']['texte']);
 	}
 
-	if ($fond == 'notifications/contenu_reservation_mail' and 
-			$statut = $flux['data']['contexte']['statut'] and
-			$qui = $flux['data']['contexte']['qui'] and
-			($statut == 'attente_paiement' or $statut == 'accepte')) {
-		$transaction = sql_fetsel('mode, id_transaction, transaction_hash, message',
+	if ($fond == 'inclure/reservation'
+			and $id_reservation = $flux['data']['contexte']['id_reservation']
+			and $statut = sql_getfetsel('statut', 'spip_reservations', 'id_reservation=' . $id_reservation)
+			and ($statut == 'attente_paiement' or $statut == 'accepte')) {
+				spip_log('fond', 'teste');
+				$qui = $flux['data']['contexte']['qui'];
+				$transaction = sql_fetsel('mode, id_transaction, transaction_hash, message',
 				'spip_transactions',
-				'id_reservation=' . $flux['data']['contexte']['id_reservation']);
+				'id_reservation=' . $id_reservation,
+				'',
+				'date_transaction DESC'
+				);
 		$mode = $transaction['mode'];
 		$id_transaction = $transaction['id_transaction'];
 		if ($qui == 'client') {
 			if ($statut == 'attente_paiement') {
-				$texte = str_replace('h4', 'h3', bank_afficher_attente_reglement(
+				$pattern = array('|<p class="titre h4">|','|</p>|');
+				$replace = array('<h3>','</h3>');
+				$texte = preg_replace($pattern, $replace, bank_afficher_attente_reglement(
 						$mode,
 						$id_transaction,
 						$transaction['transaction_hash'],
@@ -360,7 +367,7 @@ function reservation_bank_recuperer_fond($flux) {
 			) . '</p>';
 		}
 
-		$flux['data']['texte'] = str_replace('</table>', '</table>' . $texte, $flux['data']['texte']);
+		$flux['data']['texte'] .= $texte;
 	}
 	
 	return $flux;
