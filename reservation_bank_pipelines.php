@@ -422,6 +422,7 @@ function reservation_bank_bank_traiter_reglement($flux) {
 	
 	return $flux;
 }
+
 /**
  * Changer de statut si transaction en attente
  *
@@ -437,5 +438,20 @@ function reservation_bank_trig_bank_reglement_en_attente($flux) {
 	objet_instituer('reservation', $id_reservation, array (
 		'statut' => 'attente_paiement',
 	));
+	return $flux;
+}
+
+/**
+ * Insertion de css.
+ *
+ * @pipeline insert_head_css
+ *
+ * @param array $flux
+ *        	Données du pipeline
+ * @return array Données du pipeline
+ */
+function reservation_bank_insert_head_css($flux) {
+	$css = find_in_path('css/reservations_bank.css');
+	$flux .= "<link rel='stylesheet' type='text/css' media='all' href='$css' />\n";
 	return $flux;
 }
