@@ -13,3 +13,17 @@
 	margin: 1em 0;
 	padding: 1em;
 }
+
+.payer_mode {
+	border: 2px solid #e5e5e5;
+	margin: 1em 0;
+	padding: 1em;
+}
+
+.payer_mode .titre {
+	font-weight:bold;
+}
+
+#formulaire_mode_paiement .boutons {
+	border: none;
+}
