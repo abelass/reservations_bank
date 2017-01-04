@@ -1,7 +1,7 @@
 <paquet
 	prefix="reservation_bank"
 	categorie="outil"
-	version="1.1.1"
+	version="1.1.2"
 	etat="test"
 	compatibilite="[3.0.20;3.0.*]"
 	logo="prive/themes/spip/images/reservation_bank-64.png"
@@ -26,7 +26,7 @@
 	<pipeline nom="bank_traiter_reglement" inclure="reservation_bank_pipelines.php" />
 	<pipeline nom="trig_bank_reglement_en_attente" inclure="reservation_bank_pipelines.php" />
 	<pipeline nom="insert_head_css" inclure="reservation_bank_pipelines.php" />
-	
+
 
 	<pipeline nom="declarer_tables_objets_sql" inclure="base/reservation_bank.php" />
 
