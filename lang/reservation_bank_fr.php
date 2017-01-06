@@ -22,10 +22,13 @@ $GLOBALS[$GLOBALS['idx_lang']] = array(
 	// P
 	'paiement_commande' => 'Paiement de la commande #@id_commande@',
 	'paiement_reservation' => 'Paiement de la réservation #@id_reservation@',
+
 	// R
 	'reservation_bank_titre' => 'Réservations Bank',
 
 	// T
+	'texte_statut_attente_part' => ' payé partiellement- dans liste d\'attente',
+	'texte_statut_attente_paye' => ' payé - dans liste d\'attente',
 	'titre_page_configurer_reservation_bank' => 'Configuration Réservations Bank',
 	'titre_paiement_reservation' => 'Paiement de la réservation',
 	'titre_paiement_vendeur' => 'Paiement :',
