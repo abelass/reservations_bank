@@ -349,6 +349,7 @@ function reservation_bank_recuperer_fond($flux) {
 		$flux['data']['texte'] = str_replace('</div>', '</div>' . $row, $flux['data']['texte']);
 	}
 
+	// Ajoute le message de paiement.
 	if ($fond == 'inclure/reservation'
 			and $id_reservation = $flux['data']['contexte']['id_reservation']
 			and $statut = sql_getfetsel('statut', 'spip_reservations', 'id_reservation=' . $id_reservation)
