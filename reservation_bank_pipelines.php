@@ -275,18 +275,33 @@ function reservation_bank_pre_edition($flux) {
 		$montant_paye = $montant_paye[$id_reservations_detail] + $montant_reservations_detail;
 
 		// Si le montant payé est inférieur au montant dû on change les statuts.
-		if (
-				($flux['data']['statut'] == 'accepte'
-					or $flux['data']['statut'] == 'attente_paye'
-					or $flux['data']['statut'] == 'accepte_part'
-				)
-				and $montant_paye < $montant_total) {
-			$flux['data']['statut'] = 'accepte_part';
+		$statut = $flux['data']['statut'];
+		if ($montant_paye < $montant_total) {
+			if ($statut == 'accepte') {
+				$flux['data']['statut'] = 'accepte_part';
+			}
+			elseif ($statut == 'attente') {
+				$flux['data']['statut'] = 'attente_part';
+			}
 		}
+		// Si montant égal, mais statut en attente, on met en attente_paye.
+		elseif ($statut == 'attente') {
+			$flux['data']['statut'] = 'attente_paye';
+		}
+
 		// Enregistre le montant payé
 		$flux['data']['montant_paye'] = $montant_paye;
 	}
 	return $flux;
+}
+
+if (test_plugin_actif('reservation_bank')) {
+	if ($s == 'accepte') {
+		$champs['statut'] = 'attente_paye';
+	}
+	elseif ($s == 'accepte_part') {
+		$champs['statut'] = 'attente_part';
+	}
 }
 
 /**
