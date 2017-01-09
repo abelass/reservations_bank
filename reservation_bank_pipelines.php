@@ -245,7 +245,8 @@ function reservation_bank_pre_insertion($flux) {
 	$table = $flux['args']['table'];
 
 	// Enregistre l'id_reservation dans la transaction.
-	if ($table == 'spip_transactions') {
+	if ($table == 'spip_transactions' and !isset($data['id_commande'])) {
+		spip_log($flux, 'teste');
 		$flux['data']['id_reservation'] = session_get('id_reservation');
 	}
 	return $flux;
