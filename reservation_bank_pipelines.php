@@ -295,15 +295,6 @@ function reservation_bank_pre_edition($flux) {
 	return $flux;
 }
 
-if (test_plugin_actif('reservation_bank')) {
-	if ($s == 'accepte') {
-		$champs['statut'] = 'attente_paye';
-	}
-	elseif ($s == 'accepte_part') {
-		$champs['statut'] = 'attente_part';
-	}
-}
-
 /**
  * Permet de compléter ou modifier le résultat de la compilation d’un squelette donné.
  *
@@ -349,7 +340,7 @@ function reservation_bank_recuperer_fond($flux) {
 		$flux['data']['texte'] = str_replace('</div>', '</div>' . $row, $flux['data']['texte']);
 	}
 
-	// Ajoute le message de paiement.
+	// Ajoute le message de paiement à la notification de réservation.
 	if ($fond == 'inclure/reservation'
 			and $id_reservation = $flux['data']['contexte']['id_reservation']
 			and $statut = sql_getfetsel('statut', 'spip_reservations', 'id_reservation=' . $id_reservation)
