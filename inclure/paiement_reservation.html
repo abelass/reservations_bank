@@ -16,10 +16,11 @@
 		montant_ht,#GET{montant_ht},
 		auteur,#GET{email},
 		id_reservation,#GET{id_reservation},
-		tracking_id,#GET{reference}
+		tracking_id,#GET{reference},
+		champs,#ARRAY{id_reservation,#GET{id_reservation}}
 	}
 }
-#SET{donnees, 	#ARRAY{
+#SET{donnees, #ARRAY{
 		montant, #GET{total},
 		options, #GET{options}
 	}

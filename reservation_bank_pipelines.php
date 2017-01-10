@@ -25,10 +25,10 @@ function reservation_bank_formulaire_charger($flux) {
 	if ($form == 'reservation') {
 		$flux['data']['checkout'] = _request('checkout');
 		if ($flux['data']['checkout'] = _request('checkout')) {
-			$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement_reservation', array (
+			/*$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement_reservation', array (
 				'id_reservation' => session_get('id_reservation'),
 				'cacher_paiement_public' => FALSE,
-			));
+			));*/
 			$flux['data']['editable'] = FALSE;
 		}
 	}
@@ -217,38 +217,15 @@ function reservation_bank_formulaire_traiter($flux) {
 	// Affiche le formulaire de paiment au retour du formulaire réservation
 	if ($form == 'reservation') {
 		include_spip('inc/config');
-		$id_reservation = session_get('id_reservation');
-
+		$id_transaction = rb_inserer_transaction(session_get('id_reservation'));
 		if (!$cacher_paiement_public = lire_config('reservation_bank/cacher_paiement_public')) {
 			$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement_reservation', array (
 					'id_reservation' => session_get('id_reservation'),
 					'cacher_paiement_public' => FALSE
 			));
-		} else {
-			$id_transaction = rb_inserer_transaction(session_get('id_reservation'));
 		}
 	}
 
-	return $flux;
-}
-
-/**
- * Intervient avant l'enregistrement d'un objet
- *
- * @pipeline pre_insertion
- *
- * @param array $flux
- *        	Données du pipeline
- * @return array Données du pipeline
- */
-function reservation_bank_pre_insertion($flux) {
-	$table = $flux['args']['table'];
-
-	// Enregistre l'id_reservation dans la transaction.
-	if ($table == 'spip_transactions' and !isset($data['id_commande'])) {
-		spip_log($flux, 'teste');
-		$flux['data']['id_reservation'] = session_get('id_reservation');
-	}
 	return $flux;
 }
 
