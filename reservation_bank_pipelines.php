@@ -423,12 +423,16 @@ function reservation_bank_bank_traiter_reglement($flux) {
  * @return array
  */
 function reservation_bank_trig_bank_reglement_en_attente($flux) {
+	if ($id_reservation = sql_getfetsel(
+			'id_reservation',
+			'spip_transactions',
+			'id_transaction=' . $flux['args']['id_transaction'])) {
+		include_spip('action/editer_objet');
+		objet_instituer('reservation', $id_reservation, array (
+			'statut' => 'attente_paiement',
+		));
+	}
 
-	$id_reservation = sql_getfetsel('id_reservation', 'spip_transactions', 'id_transaction=' . $flux['args']['id_transaction']);
-	include_spip('action/editer_objet');
-	objet_instituer('reservation', $id_reservation, array (
-		'statut' => 'attente_paiement',
-	));
 	return $flux;
 }
 
