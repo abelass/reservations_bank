@@ -324,7 +324,7 @@ function reservation_bank_recuperer_fond($flux) {
 			and $statut = sql_getfetsel('statut', 'spip_reservations', 'id_reservation=' . $id_reservation)
 			and ($statut == 'attente_paiement' or $statut == 'accepte')) {
 				$qui = $flux['data']['contexte']['qui'];
-				$transaction = sql_fetsel('mode, id_transaction, transaction_hash, message',
+				$transaction = sql_fetsel('mode, id_transaction, transaction_hash, message, tracking_id',
 				'spip_transactions',
 				'id_reservation=' . $id_reservation,
 				'',
@@ -360,6 +360,18 @@ function reservation_bank_recuperer_fond($flux) {
 		$flux['data']['texte'] .= $texte;
 	}
 
+	// Ajouter le message pour la référence su paiement par virement.
+	if ($fond == 'presta/virement/payer/attente'and
+			$tracking_id = sql_getfetsel('tracking_id',
+					'spip_transactions',
+					'id_transaction=' . $contexte['id_transaction'])) {
+
+			$texte = '<strong>' . _T('reservation_bank:reservation_paiement_reference',
+					array('reference' => $tracking_id)) . '</strong>';
+			$flux['data']['texte'] = str_replace('</div>', $texte . '</div>', $flux['data']['texte']);
+
+	}
+
 	return $flux;
 }
 
@@ -377,7 +389,10 @@ function reservation_bank_bank_traiter_reglement($flux) {
 	if ($id_transaction = $flux['args']['id_transaction']
 			and $transaction = sql_fetsel("*", "spip_transactions",
 				"id_transaction=" . intval($id_transaction))
-			and $id_reservation = $transaction['id_reservation']) {
+			and $id_reservation = $transaction['id_reservation']
+			and $reservation = sql_fetsel('statut, reference',
+					'spip_reservations',
+					'id_reservation='.intval($id_reservation))) {
 		if (!$montant_reservations_detail_total = _request('montant_reservations_detail_total')) {
 			include_spip('inc/reservation_bank');
 			$montant_reservations_detail_total = montant_reservations_detail_total($id_reservation);
@@ -409,6 +424,11 @@ function reservation_bank_bank_traiter_reglement($flux) {
 				'statut' => 'accepte',
 				'date_paiement' => $transaction['date_transaction']
 		));
+
+		// un message gentil pour l'utilisateur qui vient de payer, on lui rappelle son numero de commande
+		$flux['data'] .= "<br />"._T('reservation_bank:merci_de_votre_reservation_paiement',
+				array('reference' => $reservation['reference']));
+
 	}
 
 	return $flux;

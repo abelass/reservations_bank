@@ -13,6 +13,7 @@ $GLOBALS[$GLOBALS['idx_lang']] = array(
 	'label_specifier_montant' => 'Specify the amount',
 
 	// M
+	'merci_de_votre_reservation_paiement' => 'Your booking <b>@reference@</b> has been validated.',
 	'message_erreur_montant_credit' => 'The amount is higher than your current credit of @credit@ !',
 	'message_erreur_montant_reservations_detail' => 'The amount should not be higher than @montant_ouvert@ (open amount)',
 	'montant_paye' => 'Paid :',
