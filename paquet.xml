@@ -1,7 +1,7 @@
 <paquet
 	prefix="reservation_bank"
 	categorie="outil"
-	version="1.1.6"
+	version="1.1.7"
 	etat="test"
 	compatibilite="[3.0.20;3.0.*]"
 	logo="prive/themes/spip/images/reservation_bank-64.png"
