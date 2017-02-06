@@ -365,7 +365,7 @@ function reservation_bank_recuperer_fond($flux) {
 			$tracking_id = sql_getfetsel('tracking_id',
 					'spip_transactions',
 					'id_transaction=' . $contexte['id_transaction']) and
-$id_reservation = sql_getfetsel('id_reservation', 'spip_reservations', 'reference LIKE'. sql_quote($tracking_id))) {
+$id_reservation = sql_getfetsel('id_reservation', 'spip_reservations', 'reference LIKE '. sql_quote($tracking_id))) {
 
 			$texte = '<strong>' . _T('reservation_bank:reservation_paiement_reference',
 					array('reference' => $tracking_id)) . '</strong>';
