@@ -26,6 +26,10 @@ function reservation_bank_formulaire_charger($flux) {
 		$flux['data']['checkout'] = _request('checkout');
 		if ($flux['data']['checkout'] = _request('checkout')) {
 			$flux['data']['editable'] = FALSE;
+			$flux['data']['message_ok'] .= recuperer_fond('inclure/paiement_reservation', array (
+				'id_reservation' => session_get('id_reservation'),
+				'cacher_paiement_public' => FALSE,
+				));
 		}
 	}
 
