@@ -423,9 +423,10 @@ function reservation_bank_bank_traiter_reglement($flux) {
 		include_spip('action/editer_objet');
 		objet_instituer('reservation', $id_reservation, array (
 				'statut' => 'accepte',
-				'montant_paye' => $montant_regle,
 				'date_paiement' => $transaction['date_transaction']
 		));
+
+
 
 		// un message gentil pour l'utilisateur qui vient de payer, on lui rappelle son numero de commande
 		$flux['data'] .= "<br />"._T('reservation_bank:merci_de_votre_reservation_paiement',
