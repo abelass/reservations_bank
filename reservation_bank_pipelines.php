@@ -387,6 +387,10 @@ $id_reservation = sql_getfetsel('id_reservation', 'spip_reservations', 'referenc
 
 	}
 
+	if ($fond == 'prive/squelettes/navigation/reservation') {
+		print 'ok';
+	}
+
 	return $flux;
 }
 

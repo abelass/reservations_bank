@@ -19,7 +19,6 @@ if (!defined('_ECRIRE_INC_VERSION'))
  * @return $id_transaction  Id de la transaction crée
  */
 function rb_inserer_transaction($id_reservation) {
-	//session_set('id_reservation',$id_reservation); //Pas propre, ne devrait pas être dans la session, à améliorer
 	$inserer_transaction = charger_fonction("inserer_transaction", "bank");
 	$donnees = unserialize(recuperer_fond(
 		'inclure/paiement_reservation',

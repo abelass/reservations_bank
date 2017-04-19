@@ -7,11 +7,16 @@ if (!defined('_ECRIRE_INC_VERSION')) {
 
 $GLOBALS[$GLOBALS['idx_lang']] = array(
 
+	// C
+	'cfg_titre_espace_prive' => 'Espace privé',
+
 	// L
 	'label_cacher_paiement_public' => 'Ne pas proposer de formulaire de paiement sur le site public',
+	'label_definir_presta_defaut' => 'Attribuer automatiquement un prestataire lors d\'une création d\'une réservation',
 	'label_fieldset_montant_detail' => 'Spécifiez le montant (en @devise@) pour chaque détail de réservation',
 	'label_fieldset_specifier' => 'Spécifier',
 	'label_preceder_formulaire' => 'Préceder le formulaire de paiment au récapitulatif de la commande.',
+	'label_presta_defaut' => "Prestataire à attribuer",
 	'label_specifier_montant' => 'Spécifier le montant',
 
 	// M
