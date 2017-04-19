@@ -388,7 +388,11 @@ $id_reservation = sql_getfetsel('id_reservation', 'spip_reservations', 'referenc
 	}
 
 	if ($fond == 'prive/squelettes/navigation/reservation') {
-		print 'ok';
+		$button = recuperer_fond('inclure/bouton_inserer_prestataire', $contexte);
+		$flux['data']['texte'] = str_replace(
+				'<!-- Infos extras -->',
+				$button . ' <!-- Infos extras -->',
+				$flux['data']['texte']);
 	}
 
 	return $flux;

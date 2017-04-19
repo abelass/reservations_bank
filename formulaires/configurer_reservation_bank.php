@@ -10,6 +10,7 @@ function formulaires_configurer_reservation_bank_saisies_dist() {
 	// Les prestas coonfigurés.
 	include_spip('inc/bank');
 	$prestas_actifs = bank_lister_configs();
+	print_r($prestas_actifs);
 
 	// Les types de prestas nécessitanpt pas de callbacj du fournisseur.
 	$prestas_simple = array('cheque', 'gratuit', 'virement');
@@ -79,4 +80,3 @@ function formulaires_configurer_reservation_bank_saisies_dist() {
 		),
 	);
 }
-?>

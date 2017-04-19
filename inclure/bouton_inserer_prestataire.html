@@ -1,0 +1,14 @@
+#SET{config,#CONFIG{reservation_bank}}
+
+#SET{prestataire_defaut, #GET{config}|table_valeur{presta_defaut}}
+
+[(#GET{prestataire_defaut}|?{
+	#BOUTON_ACTION{
+		<:reservation_bank:label_attribuer_paiement:>,
+		#URL_ACTION_AUTEUR{rb_instituer_prestataire,#ID_RESERVATION-#GET{prestataire_defaut},
+		#SELF},
+		'',
+		confirmation message}
+,
+''
+})]
