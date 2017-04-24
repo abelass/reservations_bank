@@ -74,7 +74,7 @@ function reservation_bank_formulaire_charger($flux) {
 			$montant_paye[$id_reservations_detail] = $data['montant_paye'];
 
 			if ($fonction_prix) {
-				$montant = $fonction_prix('reservations_detail',$id_reservations_detail);
+				$montant = $fonction_prix('reservations_detail', $id_reservations_detail);
 			}
 			else {
 				$montant = $data['prix'];
