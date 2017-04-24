@@ -79,7 +79,7 @@ function reservation_bank_formulaire_charger($flux) {
 			else {
 				$montant = $data['prix'];
 				if ($montant <= 0) {
-				$montant = $data['prix_ht'] + $data['taxe'];
+					$montant = $data['prix_ht'] + $data['taxe'];
 				}
 			}
 
