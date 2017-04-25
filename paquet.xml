@@ -25,7 +25,7 @@
 	<pipeline nom="bank_traiter_reglement" inclure="reservation_bank_pipelines.php" />
 	<pipeline nom="trig_bank_reglement_en_attente" inclure="reservation_bank_pipelines.php" />
 	<pipeline nom="insert_head_css" inclure="reservation_bank_pipelines.php" />
-
+	<pipeline nom="reservation_evenement_objets_configuration" inclure="reservation_bank_pipelines.php" />
 
 	<pipeline nom="declarer_tables_objets_sql" inclure="base/reservation_bank.php" />
 
