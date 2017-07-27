@@ -235,18 +235,18 @@ function reservation_bank_formulaire_traiter($flux) {
 		$id_transaction = rb_inserer_transaction(session_get('id_reservation'));
 		if (!$cacher_paiement_public) {
 			$message_ok = preg_replace('/<p[^>]*>.*?<\/p>/i', '',$flux['data']['message_ok']);
-			$tag_regex = '/<div[^>]*'.$attr.'="'.$value.'">(.*?)<\\/div>/si';
+			$tag_regex = '/<div[^>]*'.$attr.'="'.$value.'">(.*?)<\/div>/si';
 			if ($preceder_formulaire) {
-				$flux['data']['message_ok'] = recuperer_fond('inclure/paiement_reservation', array (
+				$flux['data']['message_ok'] = '<div class="intro">' . recuperer_fond('inclure/paiement_reservation', array (
 					'id_reservation' => session_get('id_reservation'),
 					'cacher_paiement_public' => FALSE
-				)) . '<br />'. $message_ok;
+				)) . '</div>'. $message_ok;
 			}
 			else {
-				$flux['data']['message_ok'] = $message_ok . recuperer_fond('inclure/paiement_reservation', array (
+				$flux['data']['message_ok'] = $message_ok . '<div class="intro">' . recuperer_fond('inclure/paiement_reservation', array (
 					'id_reservation' => session_get('id_reservation'),
 					'cacher_paiement_public' => FALSE
-				));
+				)) . '</div>';
 			}
 
 		}
