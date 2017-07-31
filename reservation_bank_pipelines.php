@@ -314,11 +314,8 @@ function reservation_bank_pre_edition($flux) {
 		// Si le montant payé est inférieur au montant dû on change les statuts.
 
 		$statut = $flux['data']['statut'];
-<<<<<<< HEAD
-		if ($montant_paye < $montant_total AND (!empty($montant_total) AND $montant_total != 0)) {
-=======
+
 		if ($montant_paye < $montant_total and (!empty($montant_total) and $montant_total != 0)) {
->>>>>>> refs/remotes/origin/dev
 			if ($statut == 'accepte') {
 				$flux['data']['statut'] = 'accepte_part';
 			}
@@ -568,17 +565,6 @@ function reservation_bank_reservation_evenement_objets_configuration($flux) {
  *        	Données du pipeline
  * @return array Données du pipeline
  */
-<<<<<<< HEAD
-
-function reservation_bank_reservation_evenement_objets_navigation($flux) {
-	$flux['data']['transactions'] = array(
-			'label' => _T('bank:titre_menu_transactions'),
-			'icone' => 'credit-card-16.png'
-	);
-
-	return $flux;
-}
-=======
 function reservation_bank_reservation_evenement_objets_navigation($flux) {
 	$flux['data']['transactions'] = array(
 		'label' => _T('bank:titre_menu_transactions'),
@@ -614,4 +600,3 @@ function reservation_bank_reservation_evenement_donnees_details($flux) {
 	return $flux;
 }
 
->>>>>>> refs/remotes/origin/dev
