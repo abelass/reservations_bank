@@ -572,3 +572,29 @@ function reservation_bank_reservation_evenement_objets_navigation($flux) {
 	return $flux;
 }
 
+/**
+ * Intervention sur les détails de réservation.
+ *
+ * @pipeline reservation_evenement_donnees_details.
+ *
+ * @param array $flux
+ *        	Données du pipeline
+ * @return array
+ *          Données du pipeline
+ */
+function reservation_bank_reservation_evenement_donnees_details($flux) {
+	$data = $flux['data'];
+	if ($flux['args']['statut'] == 'encours') {
+		if (isset($data['prix_ht']) && isset($data['prix'])) {
+			$prix_ht = $data['prix_ht'];
+			$prix = $data['prix'];
+			if ($prix <= 0 && $prix_ht <= 0) {
+				$flux['data']['statut'] = 'accepte';
+			}
+		}
+	}
+
+
+	return $flux;
+}
+
