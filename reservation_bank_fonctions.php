@@ -20,14 +20,17 @@ if (! defined ( '_ECRIRE_INC_VERSION' ))
  */
 function rb_inserer_transaction($id_reservation) {
 
-	// Voir si on peut récupérer une transaction, sino on crée une.
-	if (! $id_transaction = sql_getfetsel ( 'id_transaction', 'spip_transactions', 'id_reservation=' . $id_reservation . ' AND statut LIKE ("commande")' )) {
-		$inserer_transaction = charger_fonction ( "inserer_transaction", "bank" );
-		$donnees = unserialize ( recuperer_fond ( 'inclure/paiement_reservation', array(
+	// Voir si on peut récupérer une transaction, sinon on crée une.
+	if (!$id_transaction = sql_getfetsel(
+			'id_transaction',
+			'spip_transactions',
+			'id_reservation=' . $id_reservation . ' AND statut LIKE ("commande")', '', 'date_transaction DESC')) {
+		$inserer_transaction = charger_fonction ("inserer_transaction", "bank" );
+		$donnees = unserialize ( recuperer_fond ('inclure/paiement_reservation', array(
 			'id_reservation' => $id_reservation,
 			'cacher_paiement_public' => TRUE
 		) ) );
-		$id_transaction = $inserer_transaction ( $donnees ['montant'], $donnees ['options'] );
+		$id_transaction = $inserer_transaction($donnees['montant'], $donnees['options']);
 	}
 
 	return $id_transaction;

@@ -217,15 +217,14 @@ function reservation_bank_formulaire_verifier($flux) {
 function reservation_bank_formulaire_traiter($flux) {
 	$form = $flux['args']['form'];
 
-	// Affiche le formulaire de paiment au retour du formulaire réservation
+	// Affiche le formulaire de paiement au retour du formulaire réservation
 	if ($form == 'reservation') {
 		if (!_request('gratuit')) {
 			include_spip('inc/config');
 			$config = lire_config('reservation_bank', array());
 			$cacher_paiement_public = isset($config['cacher_paiement_public']) ? $config['cacher_paiement_public'] : '';
-			$preceder_formulaire = isset($config['preceder_formulaire']) ? $config['preceder_formulaire'] : '';
 			$id_reservation = session_get('id_reservation');
-			$id_transaction = rb_inserer_transaction($id_reservation);
+			rb_inserer_transaction($id_reservation);
 			if (!$cacher_paiement_public) {
 				$flux['data']['redirect'] = generer_url_public(
 					'paiement_reservation',
@@ -233,6 +232,23 @@ function reservation_bank_formulaire_traiter($flux) {
 
 			}
 		}
+	}
+
+	// Adapte la transaction.
+	if ($form == 'editer_reservations_detail') {
+		if ($id_reservation = sql_getfetsel('id_reservation',
+				'spip_reservations_details',
+				'id_reservations_detail=' . _request('id_reservations_detail'))) {
+			$inserer_transaction = charger_fonction ("inserer_transaction", "bank" );
+			$donnees = unserialize (recuperer_fond('inclure/paiement_reservation', array(
+				'id_reservation' => $id_reservation,
+				'cacher_paiement_public' => TRUE
+			)));
+			$donnees['options']['force'] = FALSE;
+			spip_log($donnees,'teste');
+			$inserer_transaction($donnees['montant'], $donnees['options']);
+		}
+
 	}
 
 	return $flux;
@@ -260,7 +276,6 @@ function reservation_bank_pre_edition($flux) {
 			$prix_ht = array_sum(array_column($montants, 'prix_ht'));
 			$prix = array_sum(array_column($montants, 'prix'));
 			if ($prix_ht <= 0 && $prix <= 0) {
-				spip_log($flux, 'teste');
 				$id_transaction = rb_inserer_transaction($id_reservation);
 				$row = sql_fetsel('*','spip_transactions','id_transaction='.intval($id_transaction));
 
@@ -412,6 +427,17 @@ function reservation_bank_recuperer_fond($flux) {
 			$flux['data']['texte'] = str_replace('<!-- Infos extras -->', $button . ' <!-- Infos extras -->', $flux['data']['texte']);
 		}
 	}
+
+	// Ajoute le champ montant payé au formulaire d'édition.
+	if ($fond == 'formulaires/inc-editer_reservations_details_champs') {
+			$flux['data']['texte'] .= recuperer_fond('formulaires/champ_montant_paye', $contexte);
+	}
+
+	// Ajoute le champ montant `la page du détail de réservation.
+	if ($fond == 'prive/objets/contenu/reservations_detail') {
+			$flux['data']['texte'] .= recuperer_fond('prive/objets/contenu/inc-reservation_detail_montant_paye', $contexte);
+	}
+
 
 	return $flux;
 }
