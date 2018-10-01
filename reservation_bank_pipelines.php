@@ -245,6 +245,7 @@ function reservation_bank_formulaire_traiter($flux) {
 				'cacher_paiement_public' => TRUE
 			)));
 			$donnees['options']['force'] = FALSE;
+			spip_log($donnees,'teste');
 			$inserer_transaction($donnees['montant'], $donnees['options']);
 		}
 
