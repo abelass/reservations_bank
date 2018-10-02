@@ -5,14 +5,12 @@
 	#SET{prix_ht_total, #ARRAY}
 	#SET{prix_total, #ARRAY}
 	<BOUCLE_reservation_details(RESERVATIONS_DETAILS){id_reservation}{id_reservations_detail ?}{tout}>
-		#SET{prix,#PRIX|moins{#MONTANT_PAYE}}
-		#GET{prix_ht,#GET{prix}|div{#VAL{1}|div{100}|mult{#TAXE}|plus{1}}}
-		#SET{prix_ht_total,#GET{prix_ht_total}|push{#GET{prix_ht}}}
-		#SET{taxe, #GET{prix_ht}|mult{#TAXE}|div{100}}
+		#SET{prix,#PRIX*|moins{#MONTANT_PAYE}}
+		#SET{prix_ht_total,#GET{prix_ht_total}|push{#GET{prix}|rb_montant_du_ht{#TAXE}}}
 		#SET{prix_total,#GET{prix_total}|push{#GET{prix}}}
 	</BOUCLE_reservation_details>
-		#SET{total,#GET{prix_total}|array_sum}
 		#SET{montant_ht,#GET{prix_ht_total}|array_sum}
+		#SET{total,#GET{prix_total}|array_sum}
 	</B_reservation_details>
 </BOUCLE_reservation>
 #SET{options,#ARRAY{
