@@ -1,5 +1,4 @@
-#SET{montant_paye,#ARRAY}
-#SET{prix,#ARRAY}
+#SET{montant_paye,#ARRAY} #SET{prix,#ARRAY}
 <BOUCLE_details(RESERVATIONS_DETAILS) {id_reservation}{statut ?}>
 	#SET{montant_paye,#GET{montant_paye}|push{#MONTANT_PAYE}} #SET{prix,#GET{prix}|push{#PRIX*}}
 </BOUCLE_details>
