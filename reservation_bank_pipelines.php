@@ -374,41 +374,55 @@ function reservation_bank_recuperer_fond($flux) {
 		$flux['data']['texte'] = str_replace('</div>', '</div>' . $row, $flux['data']['texte']);
 	}
 
-	// Ajoute le message de paiement à la notification de réservation.
+	// Le recapitulatif de la réservation.
 	if ($fond == 'inclure/reservation' and
-			$id_reservation = $flux['data']['contexte']['id_reservation'] and
-			$statut = sql_getfetsel('statut', 'spip_reservations', 'id_reservation=' . $id_reservation) and
-			($statut == 'attente_paiement' or $statut == 'accepte')) {
-		$qui = $flux['data']['contexte']['qui'];
-		$transaction = sql_fetsel('mode, id_transaction, transaction_hash, message, tracking_id', 'spip_transactions', 'id_reservation=' . $id_reservation, '', 'date_transaction DESC');
-		$mode = $transaction['mode'];
-		$id_transaction = $transaction['id_transaction'];
-		if ($qui == 'client') {
-			if ($statut == 'attente_paiement') {
-				$pattern = array(
-					'|<p class="titre h4">|',
-					'|</p>|'
-				);
-				$replace = array(
-					'<h3>',
-					'</h3>'
-				);
-				$texte = preg_replace($pattern, $replace, bank_afficher_attente_reglement($mode, $id_transaction, $transaction['transaction_hash'], ''));
-			}
-			else {
-				$texte = '<p>' . $transaction['message'] . '</p>';
-			}
-		}
-		elseif ($qui == 'vendeur') {
-			$url = generer_url_ecrire('transaction', 'id_transaction=' . $id_transaction);
-			$texte = '<h2>' . _T('reservation_bank:titre_paiement_vendeur') . '</h2>';
-			$texte .= '<p>' . _T('reservation_bank:message_paiement_vendeur', array(
-				'mode' => $mode,
-				'url' => $url
-			)) . '</p>';
-		}
+			$id_reservation = $flux['data']['contexte']['id_reservation']) {
 
-		$flux['data']['texte'] .= $texte;
+		// Ajouite le montant payé
+		$texte_montant_paye = recuperer_fond('inclure/texte_montant_paye', array('id_reservation' => $id_reservation));
+
+		$flux['data']['texte'] = str_replace(
+				'</tr>
+			</tfoot>',
+			$texte_montant_paye,
+			$flux['data']['texte']);
+
+
+		// Ajoute le message de paiement à la notification de réservation.
+		if ($statut = sql_getfetsel('statut', 'spip_reservations', 'id_reservation=' . $id_reservation) and
+				$statut == 'attente_paiement' or $statut == 'accepte') {
+			$qui = $flux['data']['contexte']['qui'];
+			$transaction = sql_fetsel('mode, id_transaction, transaction_hash, message, tracking_id', 'spip_transactions', 'id_reservation=' . $id_reservation, '', 'date_transaction DESC');
+			$mode = $transaction['mode'];
+			$id_transaction = $transaction['id_transaction'];
+			if ($qui == 'client') {
+				if ($statut == 'attente_paiement') {
+					$pattern = array(
+						'|<p class="titre h4">|',
+						'|</p>|'
+					);
+					$replace = array(
+						'<h3>',
+						'</h3>'
+					);
+					$texte = preg_replace(
+							$pattern,
+							$replace, bank_afficher_attente_reglement($mode, $id_transaction, $transaction['transaction_hash'], ''));
+				}
+				else {
+					$texte = '<p>' . $transaction['message'] . '</p>';
+				}
+			}
+			elseif ($qui == 'vendeur') {
+				$url = generer_url_ecrire('transaction', 'id_transaction=' . $id_transaction);
+				$texte = '<h2>' . _T('reservation_bank:titre_paiement_vendeur') . '</h2>';
+				$texte .= '<p>' . _T('reservation_bank:message_paiement_vendeur', array(
+					'mode' => $mode,
+					'url' => $url
+				)) . '</p>';
+			}
+			$flux['data']['texte'] .= $texte;
+		}
 	}
 
 	// Ajouter le message pour la référence su paiement par virement.
@@ -437,7 +451,6 @@ function reservation_bank_recuperer_fond($flux) {
 	if ($fond == 'prive/objets/contenu/reservations_detail') {
 			$flux['data']['texte'] .= recuperer_fond('prive/objets/contenu/inc-reservation_detail_montant_paye', $contexte);
 	}
-
 
 	return $flux;
 }

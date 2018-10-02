@@ -91,6 +91,5 @@ function rb_prestataires_simples_actives() {
 }
 
 function rb_montant_du_ht($montant, $taxe, $montant_paye = 0) {
-	spip_log("montan $montant, taxe $taxe ");
 	return ($montant - $montant_paye) / (1 / 100 * $taxe + 1);
 }
