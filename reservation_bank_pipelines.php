@@ -384,9 +384,9 @@ function reservation_bank_recuperer_fond($flux) {
 		$flux['data']['texte'] = str_replace(
 				'</tr>
 			</tfoot>',
-				'</tr>' .
-				$texte_montant_paye .
-			'</tfoot>'	,
+				"</tr>\n
+				$texte_montant_paye \n
+			</tfoot>\n"	,
 			$flux['data']['texte']);
 
 
